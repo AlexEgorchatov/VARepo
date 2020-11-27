@@ -6,6 +6,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using VA.Interfaces;
+using VA.Modules;
 
 namespace VA.ViewModels
 {
@@ -13,20 +15,18 @@ namespace VA.ViewModels
     {
         #region Properties
 
-        public ObservableCollection<string> Customers { get; private set; }
-
-        private string _selectedCustomer;
-        public string SelectedCustomer
+        private List<IModule> _modules;
+        public List<IModule> Modules
         {
-            get { return _selectedCustomer; }
-            set { SetProperty(ref _selectedCustomer, value); }
+            get { return _modules; }
+            set { SetProperty(ref _modules, value); }
         }
 
         #endregion
 
         #region Commands
 
-        private DelegateCommand _loadCommand;
+        /*private DelegateCommand _loadCommand;
         public DelegateCommand LoadCommand
         {
             get
@@ -39,7 +39,7 @@ namespace VA.ViewModels
                     Customers.Add("six");
                 }));
             }
-        }
+        }*/
 
         #endregion
 
@@ -47,20 +47,39 @@ namespace VA.ViewModels
 
         public MainWindowViewModel()
         {
-            Customers = new ObservableCollection<string>()
-            {
-                "one", "two", "three"
-            };
-            SelectedCustomer = Customers[1];
+
         }
 
         #endregion
 
         #region Private Methods
 
+        private void CreateModule()
+        {
+            Modules = new List<IModule>()
+            {
+                new SortModule(),
+                new StringMatchingModule()
+            };
+
+        }
+
         #endregion
 
         #region Public Methods
+
+        public Task Initialize()
+        {
+            return Task.Run(() =>
+            {
+                CreateModule();
+            });
+        }
+
+        public void StartAnimation()
+        {
+            Modules.ForEach(i => i.StartAnimation());
+        }
 
         #endregion
     }

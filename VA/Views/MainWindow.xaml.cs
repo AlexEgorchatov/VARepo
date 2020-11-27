@@ -25,5 +25,11 @@ namespace VA.Views
         {
             InitializeComponent();
         }
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            await (DataContext as MainWindowViewModel).Initialize();
+            (DataContext as MainWindowViewModel).StartAnimation();
+        }
     }
 }

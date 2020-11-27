@@ -7,16 +7,61 @@
         mc:Ignorable="d"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
+    <Window.Resources>
+        <CubicEase x:Key="d" EasingMode="EaseOut"/>
+        <BounceEase x:Key="df" EasingMode="EaseOut"/>
+        <ExponentialEase x:Key="easing" EasingMode="EaseOut" Exponent="3"/>
+    </Window.Resources>
     
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        
-        <TabControl ItemsSource="{Binding Customers}" SelectedItem="{Binding SelectedCustomer}"/>
-        <Button Grid.Row="1" Width="80" Height="40" Command="{Binding LoadCommand}" Content="Load"/>
+
+        <ListView ItemsSource="{Binding Modules}">
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Width="330" Height="300" Background="{Binding Background}">
+                        <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        <ItemsControl DataContext="{Binding Animation}" ItemsSource="{Binding AnimationItems}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas IsItemsHost="True" Background="Transparent"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemContainerStyle>
+                                <Style TargetType="{x:Type ContentPresenter}">
+                                    <Setter Property="Canvas.Top" Value="{Binding Top}"/>
+                                    <Setter Property="Canvas.Left" Value="{Binding Left}"/>
+                                </Style>
+                            </ItemsControl.ItemContainerStyle>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid x:Name="container" Width="{Binding Width}" Height="0" Tag="{Binding Height, NotifyOnTargetUpdated=True}" Background="Gray">
+                                        <Grid.Triggers>
+                                            <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="Height" To="{Binding ElementName=container, Path=Tag}" Duration="0:0:0.4" EasingFunction="{StaticResource easing}"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger>
+                                        </Grid.Triggers>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
     </Grid>
 </Window>
