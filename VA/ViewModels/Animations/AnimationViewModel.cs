@@ -1,6 +1,7 @@
 ﻿using Prism.Mvvm;
 using System.Collections.Generic;
 using System.Timers;
+using System.Windows;
 using VA.Interfaces;
 
 namespace VA.ViewModels
@@ -9,8 +10,9 @@ namespace VA.ViewModels
     {
         private Timer _timer;
         private List<AnimationItemViewModel> _animationItems;
-        private double[,] _heights;
-        private int _counter;
+        private int i;
+        private int j;
+        private int itemsCount;
 
         public List<AnimationItemViewModel> AnimationItems
         {
@@ -22,18 +24,11 @@ namespace VA.ViewModels
         {
             AnimationItems = new List<AnimationItemViewModel>()
             {
-                new AnimationItemViewModel(30, 100, 30, 30),
-                new AnimationItemViewModel(30, 100, 30, 90),
-                new AnimationItemViewModel(30, 100, 30, 150),
-                new AnimationItemViewModel(30, 100, 30, 210),
-                new AnimationItemViewModel(30, 100, 30, 270),
-            };
-            _heights = new double[5, 5] {
-                { 210, 240, 300, 180, 270 },
-                { 240, 210, 270, 180, 300 },
-                { 240, 180, 210, 300, 270 },
-                { 300, 180, 240, 210, 270 },
-                { 180, 210, 240, 270, 300 },
+                new AnimationItemViewModel(30, 270, 330 - 270, 30, 3),
+                new AnimationItemViewModel(30, 300, 330 - 300, 90, 4),
+                new AnimationItemViewModel(30, 180, 330 - 180, 150, 0),
+                new AnimationItemViewModel(30, 240, 330 - 240, 210, 2),
+                new AnimationItemViewModel(30, 210, 330 - 210, 270, 1),
             };
         }
 
@@ -41,14 +36,49 @@ namespace VA.ViewModels
         {
             _timer = new Timer();
             _timer.Interval = 1000;
-            _timer.Elapsed += TimerElapsed;
             _timer.Start();
+            _timer.Elapsed += TimerElapsed;
+
+            itemsCount = AnimationItems.Count;
+            i = 0;
+            j = 0;
         }
 
         private void TimerElapsed(object sender, ElapsedEventArgs e)
         {
-            AnimationItems.ForEach(i => i.Height = _heights[_counter, AnimationItems.IndexOf(i)]);
-            _counter = _counter == AnimationItems.Count - 1 ? 0 : _counter + 1;
+            //MessageBox.Show($"{AnimationItems[j].Value} {AnimationItems[j + 1].Value} i: {i} j: {j} j: {j + 1}");
+            if (AnimationItems[j].Value > AnimationItems[j + 1].Value)
+            {
+                var tempValue = AnimationItems[j].Value;
+                AnimationItems[j].Value = AnimationItems[j + 1].Value;
+                AnimationItems[j + 1].Value = tempValue;
+                /*AnimationItems[j].Height = AnimationItems[j + 1].Height;
+                AnimationItems[j + 1].Height = tempHeight;
+                AnimationItems[j].Top = 330 - AnimationItems[j].Height;
+                AnimationItems[j + 1].Top = 330 - AnimationItems[j + 1].Height;
+                var temp = AnimationItems[j];
+                AnimationItems[j] = AnimationItems[j + 1];
+                AnimationItems[j + 1] = temp;*/
+            }
+
+            if (j == itemsCount - i - 2)
+            {
+                j = 0;
+            }
+            else
+            {
+                j++;
+            }
+
+            if (j == 0)
+            {
+                i++;
+            }
+            if (i == itemsCount - 1)
+            {
+                //i = 0;
+                _timer.Stop();
+            }
         }
     }
 }

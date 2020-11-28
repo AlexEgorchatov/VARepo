@@ -38,12 +38,28 @@ namespace VA.ViewModels
             set { SetProperty(ref _left, value); }
         }
 
-        public AnimationItemViewModel(double width, double height, double top, double left)
+        private int _value;
+        public int Value { 
+            get { return _value; }
+            set 
+            {
+                _value = value;
+                Left = 30 + 60 * Value;
+            } 
+        }
+
+        public AnimationItemViewModel(double width, double height, double top, double left, int value)
         {
             Width = width;
             Height = height;
             Top = top;
             Left = left;
+            _value = value;
+        }
+
+        public override string ToString()
+        {
+            return $"{Value} | {Left} | {Height}";
         }
     }
 }
