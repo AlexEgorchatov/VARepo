@@ -23,7 +23,7 @@ namespace VA.Modules
             Title = "String Matching Module";
             Background = new SolidColorBrush(Colors.Blue); 
             Animation = new AnimationViewModel();
-            Animation.StartTimer();
+            //Animation.StartTimer();
         }
     }
 }

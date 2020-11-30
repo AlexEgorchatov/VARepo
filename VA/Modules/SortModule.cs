@@ -21,7 +21,7 @@ namespace VA.Modules
             Title = "Sort Module";
             Background = new SolidColorBrush(Colors.Red);
             Animation = new AnimationViewModel();
-            Animation.StartTimer();
+            //Animation.StartTimer();
         }
     }
 }
