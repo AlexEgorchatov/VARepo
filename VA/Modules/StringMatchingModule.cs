@@ -2,6 +2,7 @@
 using System.Windows.Media;
 using VA.Interfaces;
 using VA.ViewModels;
+using VA.ViewModels.Animations;
 
 namespace VA.Modules
 {
@@ -13,6 +14,8 @@ namespace VA.Modules
 
         public IAnimation Animation { get; private set; }
 
+        public ModuleType ModuleType => ModuleType.StringModule;
+
         public StringMatchingModule()
         {
 
@@ -22,8 +25,7 @@ namespace VA.Modules
         {
             Title = "String Matching Module";
             Background = new SolidColorBrush(Colors.Blue); 
-            Animation = new AnimationViewModel();
-            //Animation.StartTimer();
+            Animation = new StringMatchingModuleAnimationViewModel();
         }
     }
 }

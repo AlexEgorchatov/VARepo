@@ -7,11 +7,11 @@ using VA.Interfaces;
 
 namespace VA.ViewModels
 {
-    public class AnimationViewModel : BindableBase, IAnimation
+    public class SortModuleAnimationViewModel : BindableBase, IAnimation
     {
         private Timer _timer;
 
-        private List<AnimationItemViewModel> _animationItems;
+        private List<SortModuleItemViewModel> _animationItems;
 
         private List<double> _initialHeights;
 
@@ -19,11 +19,11 @@ namespace VA.ViewModels
 
         private int j;
 
-        private int itemsCount;
+        private int _itemsCount;
 
         private bool _isLast;
 
-        public List<AnimationItemViewModel> AnimationItems
+        public List<SortModuleItemViewModel> AnimationItems
         {
             get { return _animationItems; }
             set { SetProperty(ref _animationItems, value); }
@@ -31,7 +31,7 @@ namespace VA.ViewModels
 
         private DelegateCommand _startTimer;
 
-        public DelegateCommand StartTimers
+        public DelegateCommand StartTimer
         {
             get
             {
@@ -42,7 +42,7 @@ namespace VA.ViewModels
                     _timer.Start();
                     _timer.Elapsed += TimerElapsed;
 
-                    itemsCount = AnimationItems.Count;
+                    _itemsCount = AnimationItems.Count;
                     i = 0;
                     j = 0;
                     _isLast = false;
@@ -59,24 +59,20 @@ namespace VA.ViewModels
                 return _stopTimer ?? (_stopTimer = new DelegateCommand(() =>
                 {
                     _timer.Stop();
-                    for (int i = 0; i < AnimationItems.Count; i++)
-                    {
-                        AnimationItems[i].Height = _initialHeights[i];
-                    }
-                    AnimationItems.ForEach(i => i.IsActive = false);
+                    ResetModuleAnimation();
                 }));
             }
         }
 
-        public AnimationViewModel()
+        public SortModuleAnimationViewModel()
         {
-            AnimationItems = new List<AnimationItemViewModel>()
+            AnimationItems = new List<SortModuleItemViewModel>()
             {
-                new AnimationItemViewModel(30, 240, 330, 60),
-                new AnimationItemViewModel(30, 210, 330, 120),
-                new AnimationItemViewModel(30, 180, 330, 180),
-                new AnimationItemViewModel(30, 300, 330, 240),
-                new AnimationItemViewModel(30, 270, 330, 300),
+                new SortModuleItemViewModel(30, 240, 330, 60),
+                new SortModuleItemViewModel(30, 210, 330, 120),
+                new SortModuleItemViewModel(30, 180, 330, 180),
+                new SortModuleItemViewModel(30, 300, 330, 240),
+                new SortModuleItemViewModel(30, 270, 330, 300),
             };
 
             _initialHeights = new List<double>();
@@ -92,29 +88,24 @@ namespace VA.ViewModels
             {
                 if(_isLast)
                 {
-                    for (int k = 0; k < AnimationItems.Count; k++)
-                    {
-                        AnimationItems[k].Height = _initialHeights[k];
-                    }
-                    AnimationItems.ForEach(i => i.IsActive = false);
+                    ResetModuleAnimation();
                     _isLast = false;
 
                     return;
                 }
-                //bool isSwapped = false;
+
                 AnimationItems.ForEach(i => i.IsActive = false);
                 if (AnimationItems[j].Height > AnimationItems[j + 1].Height)
                 {
                     double tempHight = AnimationItems[j].Height;
                     AnimationItems[j].Height = AnimationItems[j + 1].Height;
                     AnimationItems[j + 1].Height = tempHight;
-                    //isSwapped = true;
                 }
 
                 AnimationItems[j].IsActive = true;
                 AnimationItems[j + 1].IsActive = true;
 
-                if (j == itemsCount - i - 2)
+                if (j == _itemsCount - i - 2)
                 {
                     j = 0;
                 }
@@ -127,12 +118,21 @@ namespace VA.ViewModels
                 {
                     i++;
                 }
-                if (i == itemsCount - 1)
+                if (i == _itemsCount - 1)
                 {
                     i = 0;
                     _isLast = true;
                 }
             });
+        }
+
+        private void ResetModuleAnimation()
+        {
+            for (int i = 0; i < AnimationItems.Count; i++)
+            {
+                AnimationItems[i].Height = _initialHeights[i];
+            }
+            AnimationItems.ForEach(i => i.IsActive = false);
         }
     }
 }

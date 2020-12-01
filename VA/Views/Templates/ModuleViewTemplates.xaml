@@ -1,0 +1,58 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:VA.Views.Templates" xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
+
+    <CubicEase x:Key="easing" EasingMode="EaseOut"/>
+    
+    <DataTemplate x:Key="SortModuleViewTemplate">
+        <Grid Width="330" Height="360" Background="{Binding Background}">
+            <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            <ItemsControl DataContext="{Binding Animation}" ItemsSource="{Binding AnimationItems}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas IsItemsHost="True" Background="Transparent"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemContainerStyle>
+                    <Style TargetType="{x:Type ContentPresenter}">
+                        <Setter Property="Canvas.Top" Value="{Binding Top}"/>
+                        <Setter Property="Canvas.Left" Value="{Binding Left}"/>
+                    </Style>
+                </ItemsControl.ItemContainerStyle>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid x:Name="container" Width="{Binding Width}" Height="{Binding Height}" Tag="{Binding Height, NotifyOnTargetUpdated=True}" Background="{Binding BackgroundBrush}">
+                            <Grid.Triggers>
+                                <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                                    <BeginStoryboard>
+                                        <Storyboard>
+                                            <DoubleAnimation Storyboard.TargetProperty="Height" To="{Binding ElementName=container, Path=Tag}" Duration="0:0:0.4" EasingFunction="{StaticResource easing}"/>
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </EventTrigger>
+                            </Grid.Triggers>
+                            <Grid.RenderTransform>
+                                <RotateTransform Angle="180"/>
+                            </Grid.RenderTransform>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseEnter">
+                    <i:InvokeCommandAction Command="{Binding Animation.StartTimer}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseLeave">
+                    <i:InvokeCommandAction Command="{Binding Animation.StopTimer}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="StringMatchingViewTemplate">
+        <Grid Background="{Binding Background}" Width="330" Height="360">
+            
+        </Grid>
+    </DataTemplate>
+
+</ResourceDictionary>

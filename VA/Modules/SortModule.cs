@@ -12,6 +12,8 @@ namespace VA.Modules
 
         public IAnimation Animation { get; private set; }
 
+        public ModuleType ModuleType => ModuleType.SortModule;
+
         public SortModule()
         {
         }
@@ -20,8 +22,7 @@ namespace VA.Modules
         {
             Title = "Sort Module";
             Background = new SolidColorBrush(Colors.Red);
-            Animation = new AnimationViewModel();
-            //Animation.StartTimer();
+            Animation = new SortModuleAnimationViewModel();
         }
     }
 }

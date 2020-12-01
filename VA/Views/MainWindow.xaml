@@ -4,14 +4,19 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VA"
+        xmlns:templates="clr-namespace:VA.Views"
         mc:Ignorable="d"
         xmlns:prism="http://prismlibrary.com/" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         prism:ViewModelLocator.AutoWireViewModel="True"
         Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
+    
     <Window.Resources>
-        <CubicEase x:Key="d" EasingMode="EaseOut"/>
-        <BounceEase x:Key="df" EasingMode="EaseOut"/>
-        <ExponentialEase x:Key="easing" EasingMode="EaseOut" Exponent="3"/>
+        <ResourceDictionary>
+            <templates:ModuleViewTemplateSelector x:Key="SortModuleViewTemplateSelector"/>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Templates/ModuleViewTemplates.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
     
     <Grid>
@@ -20,58 +25,12 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ListView ItemsSource="{Binding Modules}">
+        <ListView ItemsSource="{Binding Modules}" ItemTemplateSelector="{StaticResource SortModuleViewTemplateSelector}">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center"/>
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid Width="330" Height="360" Background="{Binding Background}">
-                        <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <ItemsControl DataContext="{Binding Animation}" ItemsSource="{Binding AnimationItems}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <Canvas IsItemsHost="True" Background="Transparent"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemContainerStyle>
-                                <Style TargetType="{x:Type ContentPresenter}">
-                                    <Setter Property="Canvas.Top" Value="{Binding Top}"/>
-                                    <Setter Property="Canvas.Left" Value="{Binding Left}"/>
-                                </Style>
-                            </ItemsControl.ItemContainerStyle>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid x:Name="container" Width="{Binding Width}" Height="{Binding Height}" Tag="{Binding Height, NotifyOnTargetUpdated=True}" Background="{Binding BackgroundBrush}">
-                                        <Grid.Triggers>
-                                            <EventTrigger RoutedEvent="Binding.TargetUpdated">
-                                                <BeginStoryboard>
-                                                    <Storyboard>
-                                                        <DoubleAnimation Storyboard.TargetProperty="Height" To="{Binding ElementName=container, Path=Tag}" Duration="0:0:0.4" EasingFunction="{StaticResource easing}"/>
-                                                    </Storyboard>
-                                                </BeginStoryboard>
-                                            </EventTrigger>
-                                        </Grid.Triggers>
-                                        <Grid.RenderTransform>
-                                            <RotateTransform Angle="180"/>
-                                        </Grid.RenderTransform>
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                        <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="MouseEnter">
-                                <i:InvokeCommandAction Command="{Binding Animation.StartTimers}"/>
-                            </i:EventTrigger>
-                            <i:EventTrigger EventName="MouseLeave">
-                                <i:InvokeCommandAction Command="{Binding Animation.StopTimer}"/>
-                            </i:EventTrigger>
-                        </i:Interaction.Triggers>
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
         </ListView>
 
     </Grid>

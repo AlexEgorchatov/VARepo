@@ -3,7 +3,7 @@ using System.Windows.Media;
 
 namespace VA.ViewModels
 {
-    public class AnimationItemViewModel : BindableBase
+    public class SortModuleItemViewModel : BindableBase
     {
         private double _width;
 
@@ -55,7 +55,7 @@ namespace VA.ViewModels
             }
         }
 
-        public AnimationItemViewModel(double width, double height, double top, double left)
+        public SortModuleItemViewModel(double width, double height, double top, double left)
         {
             Width = width;
             Height = height;

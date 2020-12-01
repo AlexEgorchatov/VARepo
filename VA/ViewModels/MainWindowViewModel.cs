@@ -26,21 +26,6 @@ namespace VA.ViewModels
 
         #region Commands
 
-        /*private DelegateCommand _loadCommand;
-        public DelegateCommand LoadCommand
-        {
-            get
-            {
-                return _loadCommand ?? (_loadCommand = new DelegateCommand(() =>
-                {
-                    Customers.Clear();
-                    Customers.Add("four");
-                    Customers.Add("five");
-                    Customers.Add("six");
-                }));
-            }
-        }*/
-
         #endregion
 
         #region Constructors
