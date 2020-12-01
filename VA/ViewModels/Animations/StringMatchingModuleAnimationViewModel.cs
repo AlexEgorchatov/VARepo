@@ -15,12 +15,14 @@ namespace VA.ViewModels.Animations
     {
         private Timer _timer;
 
-        private string _input;
-        public string Input
+        private List<char> _input;
+        public List<char> Input
         {
             get { return _input; }
             set { SetProperty(ref _input, value); }
         }
+
+        public string Pattern { get; private set; }
 
         private DelegateCommand _startTimer;
 
@@ -54,7 +56,8 @@ namespace VA.ViewModels.Animations
 
         public StringMatchingModuleAnimationViewModel()
         {
-
+            Input = "aeefseaedkjieaeae".ToList();
+            Pattern = "Pattern: ae";
         }
 
         private void TimerElapsed(object sender, ElapsedEventArgs e)

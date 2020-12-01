@@ -17,7 +17,7 @@ namespace VA.Views
                     case ModuleType.SortModule:
                         return element.FindResource("SortModuleViewTemplate") as DataTemplate;
 
-                    case ModuleType.StringModule:
+                    case ModuleType.StringMatchingModule:
                         return element.FindResource("StringMatchingViewTemplate") as DataTemplate;
 
                     default:

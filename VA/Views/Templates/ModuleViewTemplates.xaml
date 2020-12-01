@@ -51,7 +51,32 @@
 
     <DataTemplate x:Key="StringMatchingViewTemplate">
         <Grid Background="{Binding Background}" Width="330" Height="360">
-            
+            <Grid DataContext="{Binding Animation}" Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Input: " FontSize="24"/>
+                    <ItemsControl ItemsSource="{Binding Input}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding .}" FontSize="24" Foreground="Azure"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+
+                <TextBlock Grid.Row="1" Text="{Binding Pattern}" VerticalAlignment="Center" FontSize="24"/>
+                <TextBlock Grid.Row="2" Text="hello" VerticalAlignment="Center" FontSize="24"/>
+            </Grid>
         </Grid>
     </DataTemplate>
 

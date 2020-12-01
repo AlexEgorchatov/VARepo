@@ -4,7 +4,7 @@ namespace VA.Interfaces
 {
     public enum ModuleType
     {
-        SortModule, StringModule
+        SortModule, StringMatchingModule
     }
 
     public interface IModule

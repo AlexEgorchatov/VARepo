@@ -14,7 +14,7 @@ namespace VA.Modules
 
         public IAnimation Animation { get; private set; }
 
-        public ModuleType ModuleType => ModuleType.StringModule;
+        public ModuleType ModuleType => ModuleType.StringMatchingModule;
 
         public StringMatchingModule()
         {
