@@ -38,13 +38,16 @@ namespace VA.ViewModels
         }
 
         private SolidColorBrush _activeBrush;
-        private SolidColorBrush _nonActiveBrush;
+
+        private SolidColorBrush _inactiveBrush;
+
         public SolidColorBrush BackgroundBrush
         {
-            get { return _isActive ? _activeBrush : _nonActiveBrush; }
+            get { return _isActive ? _activeBrush : _inactiveBrush; }
         }
 
         private bool _isActive;
+
         public bool IsActive
         {
             get { return _isActive; }
@@ -61,7 +64,7 @@ namespace VA.ViewModels
             Height = height;
             Top = top;
             Left = left;
-            _nonActiveBrush = new SolidColorBrush(Colors.Gray);
+            _inactiveBrush = new SolidColorBrush(Colors.Gray);
             _activeBrush = new SolidColorBrush(Colors.Green);
         }
 

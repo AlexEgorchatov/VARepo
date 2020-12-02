@@ -60,6 +60,7 @@ namespace VA.ViewModels
                 {
                     _timer.Stop();
                     ResetModuleAnimation();
+                    _timer.Elapsed -= TimerElapsed;
                 }));
             }
         }

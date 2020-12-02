@@ -68,15 +68,28 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding .}" FontSize="24" Foreground="Azure"/>
+                                <TextBlock Text="{Binding Character}" Foreground="{Binding ForegroundBrush}" FontSize="24"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
                 </StackPanel>
-
-                <TextBlock Grid.Row="1" Text="{Binding Pattern}" VerticalAlignment="Center" FontSize="24"/>
-                <TextBlock Grid.Row="2" Text="hello" VerticalAlignment="Center" FontSize="24"/>
+                <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="Pattern: " FontSize="24"/>
+                    <TextBlock Text="{Binding Pattern}" FontSize="24"/>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Orientation="Horizontal"  VerticalAlignment="Center">
+                    <TextBlock Text="Found at: " FontSize="24"/>
+                    <TextBlock Text="{Binding Result}" FontSize="24"/>
+                </StackPanel>
             </Grid>
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseEnter">
+                    <i:InvokeCommandAction Command="{Binding Animation.StartTimer}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseLeave">
+                    <i:InvokeCommandAction Command="{Binding Animation.StopTimer}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
         </Grid>
     </DataTemplate>
 
