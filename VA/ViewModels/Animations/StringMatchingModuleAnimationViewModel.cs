@@ -16,14 +16,14 @@ namespace VA.ViewModels.Animations
     internal class StringMatchingModuleAnimationViewModel : BindableBase, IAnimation
     {
         private bool _isCanceled;
-        private const int _delayTime = 1000;
+        private const int _delayTime = 600;
         private readonly Mutex _mutex;
 
         private bool _isFirstMatch;
 
-        private List<StringMatchingModuleItemViewModel> _input;
+        private List<StringMatchingModuleCharViewModel> _input;
 
-        public List<StringMatchingModuleItemViewModel> Input
+        public List<StringMatchingModuleCharViewModel> Input
         {
             get { return _input; }
             set { SetProperty(ref _input, value); }
@@ -126,8 +126,8 @@ namespace VA.ViewModels.Animations
         public StringMatchingModuleAnimationViewModel()
         {
             _mutex = new Mutex();
-            var input = "aeaeae";
-            Input = new List<StringMatchingModuleItemViewModel>(input.Select(i => new StringMatchingModuleItemViewModel(i)));
+            var input = "eeaea";
+            Input = new List<StringMatchingModuleCharViewModel>(input.Select(i => new StringMatchingModuleCharViewModel(i)));
             _activeItems = new List<int>();
             Pattern = "ae";
             _isFirstMatch = true;

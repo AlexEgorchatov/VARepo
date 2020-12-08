@@ -15,7 +15,7 @@ namespace VA.ViewModels
         private readonly Mutex _mutex;
         private List<SortModuleItemViewModel> _animationItems;
         private double[] _initialHeights;
-        private const int _delayTime = 1000;
+        private const int _delayTime = 600;
 
         public List<SortModuleItemViewModel> AnimationItems
         {

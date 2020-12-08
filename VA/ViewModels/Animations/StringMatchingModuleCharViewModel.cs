@@ -3,7 +3,7 @@ using System.Windows.Media;
 
 namespace VA.ViewModels.Animations
 {
-    public class StringMatchingModuleItemViewModel : BindableBase
+    public class StringMatchingModuleCharViewModel : BindableBase
     {
         private SolidColorBrush _activeBrush;
 
@@ -13,8 +13,6 @@ namespace VA.ViewModels.Animations
         {
             get { return _isActive ? _activeBrush : _inactiveBrush; }
         }
-
-        public char Character { get; set; }
 
         private bool _isActive;
 
@@ -28,7 +26,10 @@ namespace VA.ViewModels.Animations
             }
         }
 
-        public StringMatchingModuleItemViewModel(char character)
+        public char Character { get; set; }
+
+
+        public StringMatchingModuleCharViewModel(char character)
         {
             Character = character;
             _inactiveBrush = new SolidColorBrush(Colors.Black);

@@ -8,11 +8,11 @@
         mc:Ignorable="d"
         xmlns:prism="http://prismlibrary.com/" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
+        Title="MainWindow" Height="720" Width="1280" Loaded="Window_Loaded">
     
     <Window.Resources>
         <ResourceDictionary>
-            <templates:ModuleViewTemplateSelector x:Key="SortModuleViewTemplateSelector"/>
+            <templates:ModuleViewTemplateSelector x:Key="ModuleViewTemplateSelector"/>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Templates/ModuleViewTemplates.xaml"/>
             </ResourceDictionary.MergedDictionaries>
@@ -25,7 +25,7 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ListView ItemsSource="{Binding Modules}" ItemTemplateSelector="{StaticResource SortModuleViewTemplateSelector}">
+        <ListView ItemsSource="{Binding Modules}" ItemTemplateSelector="{StaticResource ModuleViewTemplateSelector}">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center"/>

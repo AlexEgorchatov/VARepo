@@ -20,6 +20,9 @@ namespace VA.Views
                     case ModuleType.StringMatchingModule:
                         return element.FindResource("StringMatchingViewTemplate") as DataTemplate;
 
+                    case ModuleType.GridPathModule:
+                        return element.FindResource("GridPathViewTemplate") as DataTemplate;
+
                     default:
                         return null;
                 }

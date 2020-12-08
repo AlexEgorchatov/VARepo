@@ -44,7 +44,8 @@ namespace VA.ViewModels
             Modules = new List<IModule>()
             {
                 new SortModule(),
-                new StringMatchingModule()
+                new StringMatchingModule(),
+                new GridPathModule()
             };
 
         }
