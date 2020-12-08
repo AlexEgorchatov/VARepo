@@ -5,9 +5,9 @@ namespace VA.Interfaces
 {
     public interface IAnimation
     {
-        DelegateCommand StartTimer { get; }
+        DelegateCommand StartAnimation { get; }
 
-        DelegateCommand StopTimer { get; }
+        DelegateCommand StopAnimation { get; }
 
     }
 }

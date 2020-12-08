@@ -3,7 +3,8 @@
                     xmlns:local="clr-namespace:VA.Views.Templates" xmlns:i="http://schemas.microsoft.com/xaml/behaviors">
 
     <CubicEase x:Key="easing" EasingMode="EaseOut"/>
-    
+    <Duration x:Key="duration">0:0:0.4</Duration>
+
     <DataTemplate x:Key="SortModuleViewTemplate">
         <Grid Width="330" Height="360" Background="{Binding Background}">
             <TextBlock Text="{Binding Title}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -26,7 +27,7 @@
                                 <EventTrigger RoutedEvent="Binding.TargetUpdated">
                                     <BeginStoryboard>
                                         <Storyboard>
-                                            <DoubleAnimation Storyboard.TargetProperty="Height" To="{Binding ElementName=container, Path=Tag}" Duration="0:0:0.4" EasingFunction="{StaticResource easing}"/>
+                                            <DoubleAnimation Storyboard.TargetProperty="Height" To="{Binding ElementName=container, Path=Tag}" Duration="{StaticResource duration}" EasingFunction="{StaticResource easing}"/>
                                         </Storyboard>
                                     </BeginStoryboard>
                                 </EventTrigger>
@@ -40,10 +41,10 @@
             </ItemsControl>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseEnter">
-                    <i:InvokeCommandAction Command="{Binding Animation.StartTimer}"/>
+                    <i:InvokeCommandAction Command="{Binding Animation.StartAnimation}"/>
                 </i:EventTrigger>
                 <i:EventTrigger EventName="MouseLeave">
-                    <i:InvokeCommandAction Command="{Binding Animation.StopTimer}"/>
+                    <i:InvokeCommandAction Command="{Binding Animation.StopAnimation}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Grid>
@@ -84,10 +85,10 @@
             </Grid>
             <i:Interaction.Triggers>
                 <i:EventTrigger EventName="MouseEnter">
-                    <i:InvokeCommandAction Command="{Binding Animation.StartTimer}"/>
+                    <i:InvokeCommandAction Command="{Binding Animation.StartAnimation}"/>
                 </i:EventTrigger>
                 <i:EventTrigger EventName="MouseLeave">
-                    <i:InvokeCommandAction Command="{Binding Animation.StopTimer}"/>
+                    <i:InvokeCommandAction Command="{Binding Animation.StopAnimation}"/>
                 </i:EventTrigger>
             </i:Interaction.Triggers>
         </Grid>

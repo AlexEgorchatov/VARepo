@@ -1,6 +1,8 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using System.Windows;
 using VA.Interfaces;
@@ -9,19 +11,11 @@ namespace VA.ViewModels
 {
     public class SortModuleAnimationViewModel : BindableBase, IAnimation
     {
-        private Timer _timer;
-
+        private bool _isCanceled;
+        private readonly Mutex _mutex;
         private List<SortModuleItemViewModel> _animationItems;
-
-        private List<double> _initialHeights;
-
-        private int i;
-
-        private int j;
-
-        private int _itemsCount;
-
-        private bool _isLast;
+        private double[] _initialHeights;
+        private const int _delayTime = 1000;
 
         public List<SortModuleItemViewModel> AnimationItems
         {
@@ -29,102 +23,91 @@ namespace VA.ViewModels
             set { SetProperty(ref _animationItems, value); }
         }
 
-        private DelegateCommand _startTimer;
+        private DelegateCommand _startAnimation;
 
-        public DelegateCommand StartTimer
+        public DelegateCommand StartAnimation
         {
             get
             {
-                return _startTimer ?? (_startTimer = new DelegateCommand(() =>
+                return _startAnimation ?? (_startAnimation = new DelegateCommand(async () =>
                 {
-                    _timer = new Timer();
-                    _timer.Interval = 1000;
-                    _timer.Start();
-                    _timer.Elapsed += TimerElapsed;
+                    _isCanceled = false;
 
-                    _itemsCount = AnimationItems.Count;
-                    i = 0;
-                    j = 0;
-                    _isLast = false;
+                    for (int i = 0; i < AnimationItems.Count - 1; i++)
+                    {
+                        bool isSwapped = false;
+                        for (int j = 0; j < AnimationItems.Count - i - 1; j++)
+                        {
+                            if (_mutex.WaitOne())
+                            {
+                                if (_isCanceled)
+                                {
+                                    ResetModuleAnimation();
+                                    return;
+                                }
+                                else
+                                {
+                                    AnimationItems.ForEach(i => i.IsActive = false);
+                                    if (AnimationItems[j].Height > AnimationItems[j + 1].Height)
+                                    {
+                                        var temp = AnimationItems[j].Height;
+                                        AnimationItems[j].Height = AnimationItems[j + 1].Height;
+                                        AnimationItems[j + 1].Height = temp;
+                                        isSwapped = true;
+                                    }
+                                    AnimationItems[j].IsActive = true;
+                                    AnimationItems[j + 1].IsActive = true;
+                                    await Task.Delay(_delayTime);
+                                }
+                                _mutex.ReleaseMutex();
+                            }
+                        }
+
+                        if (!isSwapped)
+                        {
+                            i = -1;
+                            ResetModuleAnimation();
+                            await Task.Delay(_delayTime);
+                        }
+                    }
                 }));
             }
         }
 
-        private DelegateCommand _stopTimer;
+        private DelegateCommand _stopAnimation;
 
-        public DelegateCommand StopTimer
+        public DelegateCommand StopAnimation
         {
             get
             {
-                return _stopTimer ?? (_stopTimer = new DelegateCommand(() =>
+                return _stopAnimation ?? (_stopAnimation = new DelegateCommand(async () =>
                 {
-                    _timer.Stop();
-                    ResetModuleAnimation();
-                    _timer.Elapsed -= TimerElapsed;
+                    if (_mutex.WaitOne())
+                    {
+                        _isCanceled = true;
+                        _mutex.ReleaseMutex();
+                    }
                 }));
             }
         }
 
         public SortModuleAnimationViewModel()
         {
+            _mutex = new Mutex();
             AnimationItems = new List<SortModuleItemViewModel>()
             {
-                new SortModuleItemViewModel(30, 240, 330, 60),
-                new SortModuleItemViewModel(30, 210, 330, 120),
+                new SortModuleItemViewModel(30, 270, 330, 60),
+                new SortModuleItemViewModel(30, 300, 330, 120),
                 new SortModuleItemViewModel(30, 180, 330, 180),
-                new SortModuleItemViewModel(30, 300, 330, 240),
-                new SortModuleItemViewModel(30, 270, 330, 300),
+                new SortModuleItemViewModel(30, 210, 330, 240),
+                new SortModuleItemViewModel(30, 240, 330, 300),
             };
 
-            _initialHeights = new List<double>();
-            foreach (var item in AnimationItems)
+            _initialHeights = new double[AnimationItems.Count];
+            for (int i = 0; i < _initialHeights.Length; i++)
             {
-                _initialHeights.Add(item.Height);
+                _initialHeights[i] = AnimationItems[i].Height;
             }
-        }
-
-        private void TimerElapsed(object sender, ElapsedEventArgs e)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                if(_isLast)
-                {
-                    ResetModuleAnimation();
-                    _isLast = false;
-
-                    return;
-                }
-
-                AnimationItems.ForEach(i => i.IsActive = false);
-                if (AnimationItems[j].Height > AnimationItems[j + 1].Height)
-                {
-                    double tempHight = AnimationItems[j].Height;
-                    AnimationItems[j].Height = AnimationItems[j + 1].Height;
-                    AnimationItems[j + 1].Height = tempHight;
-                }
-
-                AnimationItems[j].IsActive = true;
-                AnimationItems[j + 1].IsActive = true;
-
-                if (j == _itemsCount - i - 2)
-                {
-                    j = 0;
-                }
-                else
-                {
-                    j++;
-                }
-
-                if (j == 0)
-                {
-                    i++;
-                }
-                if (i == _itemsCount - 1)
-                {
-                    i = 0;
-                    _isLast = true;
-                }
-            });
         }
 
         private void ResetModuleAnimation()
