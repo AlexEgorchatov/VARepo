@@ -1,76 +1,110 @@
-﻿using Prism.Mvvm;
+﻿using Prism.Commands;
+using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 
 namespace VA.ViewModels.Animations
 {
+    public enum ColorType
+    {
+        Neutral, Start, Destination, Path, Search
+    }
+
     public class GridPathModuleCellViewModel : BindableBase
     {
-        private double _width;
+        private const double _cellSide = 60;
 
-        public double Width
+        public double Width { get; }
+
+        public double Height { get; }
+
+        public double Top { get; }
+
+        public double Left { get; }
+
+        public int Distance { get; set; }
+
+        public bool IsVisited { get; set; }
+
+        private ColorType _colorType;
+        public ColorType ColorType 
         {
-            get { return _width; }
-            set { SetProperty(ref _width, value); }
+            get { return _colorType; }
+            set
+            {
+                _colorType = value;
+                RaisePropertyChanged("BackgroundBrush");
+            } 
         }
 
-        private double _height;
-
-        public double Height
+        private int _xCoordinate;
+        public int XCoordinate
         {
-            get { return _height; }
-            set { SetProperty(ref _height, value); }
+            get { return _xCoordinate; }
+            set { SetProperty(ref _xCoordinate, value); }
         }
 
-        private double _top;
-
-        public double Top
+        private int _yCoordinate;
+        public int YCoordinate
         {
-            get { return _top; }
-            set { SetProperty(ref _top, value); }
+            get { return _yCoordinate; }
+            set { SetProperty(ref _yCoordinate, value); }
         }
-
-        private double _left;
-
-        public double Left
-        {
-            get { return _left; }
-            set { SetProperty(ref _left, value); }
-        }
-
-        private SolidColorBrush _activeBrush;
-
-        private SolidColorBrush _inactiveBrush;
+        
+        private SolidColorBrush _neutralBrush;
+        private SolidColorBrush _startBrush;
+        private SolidColorBrush _destinationBrush;
+        private SolidColorBrush _pathBrush;
+        private SolidColorBrush _searchBrush;
 
         public SolidColorBrush BackgroundBrush
         {
-            get { return _isActive ? _activeBrush : _inactiveBrush; }
-        }
-
-        private bool _isActive;
-
-        public bool IsActive
-        {
-            get { return _isActive; }
-            set
+            get 
             {
-                _isActive = value;
-                RaisePropertyChanged("ForegroundBrush");
+                switch (ColorType)
+                {
+                    case ColorType.Neutral:
+                        return _neutralBrush;
+
+                    case ColorType.Start:
+                        return _startBrush;
+
+                    case ColorType.Destination:
+                        return _destinationBrush;
+
+                    case ColorType.Path:
+                        return _pathBrush;
+
+                    case ColorType.Search:
+                        return _searchBrush;
+
+                    default:
+                        return _neutralBrush;
+                }
             }
         }
 
-        public GridPathModuleCellViewModel(double width, double height, double top, double left)
+        public GridPathModuleCellViewModel(int x, int y)
         {
-            Width = width;
-            Height = height;
-            Top = top;
-            Left = left;
-            _inactiveBrush = new SolidColorBrush(Colors.Gray);
-            _activeBrush = new SolidColorBrush(Colors.Yellow);
+            XCoordinate = x;
+            YCoordinate = y;
+            Distance = 0;
+            Width = _cellSide;
+            Height = _cellSide;
+            Top = 30 + 60 * x;
+            Left = 15 + 60 * y;
+            ColorType = ColorType.Neutral;
+            IsVisited = false;
+            _neutralBrush = new SolidColorBrush(Colors.Gray);
+            _startBrush = new SolidColorBrush(Colors.Green);
+            _destinationBrush = new SolidColorBrush(Colors.Red);
+            _pathBrush = new SolidColorBrush(Colors.OrangeRed);
+            _searchBrush = new SolidColorBrush(Colors.Orange);
         }
     }
 }

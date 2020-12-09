@@ -21,7 +21,7 @@ namespace VA.Modules
         public void StartAnimation()
         {
             Title = "Grid Path Module";
-            Background = new SolidColorBrush(Colors.Green);
+            Background = new SolidColorBrush(Colors.Purple);
             Animation = new GridPathModuleAnimationViewModel();
         }
     }

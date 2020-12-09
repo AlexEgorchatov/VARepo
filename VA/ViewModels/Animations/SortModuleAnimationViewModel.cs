@@ -96,8 +96,8 @@ namespace VA.ViewModels
             _mutex = new Mutex();
             AnimationItems = new List<SortModuleItemViewModel>()
             {
-                new SortModuleItemViewModel(30, 270, 330, 60),
-                new SortModuleItemViewModel(30, 300, 330, 120),
+                new SortModuleItemViewModel(30, 300, 330, 60),
+                new SortModuleItemViewModel(30, 270, 330, 120),
                 new SortModuleItemViewModel(30, 180, 330, 180),
                 new SortModuleItemViewModel(30, 210, 330, 240),
                 new SortModuleItemViewModel(30, 240, 330, 300),
