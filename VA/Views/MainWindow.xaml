@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         xmlns:prism="http://prismlibrary.com/" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="MainWindow" Height="720" Width="1280" Loaded="Window_Loaded">
+        Title="MainWindow" Height="720" MinHeight="720" Width="1280" MinWidth="1280" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" WindowState="Normal">
     
     <Window.Resources>
         <ResourceDictionary>
@@ -26,9 +26,9 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Observe algorithms in action" VerticalAlignment="Center" FontSize="48" Foreground="#F5C81A" FontFamily="Do Hyeon"/>
+        <TextBlock Text="Observe algorithms in action" VerticalAlignment="Center" FontSize="48" Foreground="#F5C81A"/>
 
-        <ListView Grid.Row="1" ItemsSource="{Binding Modules}" ItemTemplateSelector="{StaticResource ModuleViewTemplateSelector}" Background="#444">
+        <ListView Grid.Row="1" ItemsSource="{Binding Modules}" ItemTemplateSelector="{StaticResource ModuleViewTemplateSelector}" ItemContainerStyle="{DynamicResource ModuleSelectorListViewItemStyle}" Background="#444">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center"/>

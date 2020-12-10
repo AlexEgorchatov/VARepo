@@ -113,7 +113,7 @@ namespace VA.ViewModels.Animations
             _neutralBrush = new SolidColorBrush(Colors.White);
             _startBrush = new SolidColorBrush(Colors.Green);
             _destinationBrush = new SolidColorBrush(Colors.Red);
-            _pathBrush = new SolidColorBrush(Colors.OrangeRed);
+            _pathBrush = new SolidColorBrush(Colors.DarkRed);
             _searchBrush = new SolidColorBrush(Color.FromRgb(245, 200, 26));
         }
 
