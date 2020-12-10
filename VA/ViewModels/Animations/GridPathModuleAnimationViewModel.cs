@@ -1,10 +1,6 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VA.Interfaces;
@@ -13,11 +9,32 @@ namespace VA.ViewModels.Animations
 {
     public class GridPathModuleAnimationViewModel : BindableBase, IAnimation
     {
+        #region Private Fields
+
+        private const int _delayTime = 500;
         private const int _gridSize = 5;
-        private bool _isCanceled;
         private readonly Mutex _mutex;
-        private const int _delayTime = 1000;
+        private GridPathModuleCellViewModel _destination;
         private List<GridPathModuleCellViewModel> _grid;
+        private bool _isCanceled;
+        private GridPathModuleCellViewModel _start;
+        private DelegateCommand _startAnimation;
+        private DelegateCommand _stopAnimation;
+
+        #endregion
+
+        #region Public Properties
+
+        public GridPathModuleCellViewModel Destination
+        {
+            get { return _destination; }
+            set
+            {
+                _destination = value;
+                Destination.ColorType = ColorType.Destination;
+            }
+        }
+
         public List<GridPathModuleCellViewModel> Grid
         {
             get { return _grid; }
@@ -26,29 +43,16 @@ namespace VA.ViewModels.Animations
 
         public Queue<GridPathModuleCellViewModel> GridQueue { get; set; }
 
-        private GridPathModuleCellViewModel _start;
-        public GridPathModuleCellViewModel Start 
+        public GridPathModuleCellViewModel Start
         {
             get { return _start; }
             set
             {
                 _start = value;
                 Start.ColorType = ColorType.Start;
-            } 
+            }
         }
 
-        private GridPathModuleCellViewModel _destination;
-        public GridPathModuleCellViewModel Destination 
-        {
-            get { return _destination; }
-            set 
-            {
-                _destination = value;
-                Destination.ColorType = ColorType.Destination;
-            } 
-        }
-
-        private DelegateCommand _startAnimation;
         public DelegateCommand StartAnimation
         {
             get
@@ -84,10 +88,15 @@ namespace VA.ViewModels.Animations
                                     {
                                         await Task.Delay(_delayTime);
                                         DrawPath(Destination, Start);
-                                        /*await Task.Delay(_delayTime);
-                                        ResetModuleAnimation();*/
+                                        await Task.Delay(_delayTime);
+                                        ResetModuleAnimation();
+                                        GridQueue.Enqueue(Start);
+                                        Start.IsVisited = true;
+                                        currentDistance = 0;
+                                        await Task.Delay(_delayTime);
+                                        continue;
                                     }
-                                    if (cell.Distance - currentDistance  == 1)
+                                    if (cell.Distance - currentDistance == 1)
                                     {
                                         currentDistance = cell.Distance;
                                         await Task.Delay(_delayTime);
@@ -105,8 +114,13 @@ namespace VA.ViewModels.Animations
                                     {
                                         await Task.Delay(_delayTime);
                                         DrawPath(Destination, Start);
-                                        /*await Task.Delay(_delayTime);
-                                        ResetModuleAnimation();*/
+                                        await Task.Delay(_delayTime);
+                                        ResetModuleAnimation();
+                                        GridQueue.Enqueue(Start);
+                                        Start.IsVisited = true;
+                                        currentDistance = 0;
+                                        await Task.Delay(_delayTime);
+                                        continue;
                                     }
                                     if (cell.Distance - currentDistance == 1)
                                     {
@@ -126,8 +140,13 @@ namespace VA.ViewModels.Animations
                                     {
                                         await Task.Delay(_delayTime);
                                         DrawPath(Destination, Start);
-                                        /*await Task.Delay(_delayTime);
-                                        ResetModuleAnimation();*/
+                                        await Task.Delay(_delayTime);
+                                        ResetModuleAnimation();
+                                        GridQueue.Enqueue(Start);
+                                        Start.IsVisited = true;
+                                        currentDistance = 0;
+                                        await Task.Delay(_delayTime);
+                                        continue;
                                     }
                                     if (cell.Distance - currentDistance == 1)
                                     {
@@ -147,8 +166,13 @@ namespace VA.ViewModels.Animations
                                     {
                                         await Task.Delay(_delayTime);
                                         DrawPath(Destination, Start);
-                                        /*await Task.Delay(_delayTime);
-                                        ResetModuleAnimation();*/
+                                        await Task.Delay(_delayTime);
+                                        ResetModuleAnimation();
+                                        GridQueue.Enqueue(Start);
+                                        Start.IsVisited = true;
+                                        currentDistance = 0;
+                                        await Task.Delay(_delayTime);
+                                        continue;
                                     }
                                     if (cell.Distance - currentDistance == 1)
                                     {
@@ -167,8 +191,6 @@ namespace VA.ViewModels.Animations
             }
         }
 
-        private DelegateCommand _stopAnimation;
-
         public DelegateCommand StopAnimation
         {
             get
@@ -183,6 +205,10 @@ namespace VA.ViewModels.Animations
                 }));
             }
         }
+
+        #endregion
+
+        #region Public Constructors
 
         public GridPathModuleAnimationViewModel()
         {
@@ -201,29 +227,20 @@ namespace VA.ViewModels.Animations
             Destination = Grid[8];
         }
 
-        private void ResetModuleAnimation()
-        {
-            GridQueue.Clear();
-            for (int i = 0; i < Grid.Count; i++)
-            {
-                Grid[i].ColorType = ColorType.Neutral;
-                Grid[i].Distance = 0;
-                Grid[i].IsVisited = false;
-            }
-            Start = Grid[15];
-            Destination = Grid[8];
-        }
+        #endregion
+
+        #region Private Methods
 
         private void DrawPath(GridPathModuleCellViewModel destination, GridPathModuleCellViewModel start)
         {
             GridPathModuleCellViewModel cell = destination;
 
-            while(cell.Distance != 0)
+            while (cell.Distance != 0)
             {
                 if (Grid[Grid.IndexOf(cell) - _gridSize].Distance == cell.Distance - 1)
                 {
                     cell = Grid[Grid.IndexOf(cell) - _gridSize];
-                    if(cell == start)
+                    if (cell == start)
                     {
                         break;
                     }
@@ -258,5 +275,20 @@ namespace VA.ViewModels.Animations
                 }
             }
         }
+
+        private void ResetModuleAnimation()
+        {
+            GridQueue.Clear();
+            for (int i = 0; i < Grid.Count; i++)
+            {
+                Grid[i].ColorType = ColorType.Neutral;
+                Grid[i].Distance = 0;
+                Grid[i].IsVisited = false;
+            }
+            Start = Grid[15];
+            Destination = Grid[8];
+        }
+
+        #endregion
     }
 }

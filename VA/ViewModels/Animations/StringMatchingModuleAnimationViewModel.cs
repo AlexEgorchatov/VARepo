@@ -1,27 +1,35 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
-using System.Windows;
-using System.Windows.Media;
 using VA.Interfaces;
 
 namespace VA.ViewModels.Animations
 {
     internal class StringMatchingModuleAnimationViewModel : BindableBase, IAnimation
     {
-        private bool _isCanceled;
-        private const int _delayTime = 600;
+        #region Private Fields
+
+        private const int _delayTime = 500;
         private readonly Mutex _mutex;
-
-        private bool _isFirstMatch;
-
         private List<StringMatchingModuleCharViewModel> _input;
+        private bool _isCanceled;
+        private bool _isFirstMatch;
+        private string _result;
+        private DelegateCommand _startAnimation;
+        private DelegateCommand _stopAnimation;
+
+        #endregion
+
+        #region Private Properties
+
+        private List<int> _activeItems { get; set; }
+
+        #endregion
+
+        #region Public Properties
 
         public List<StringMatchingModuleCharViewModel> Input
         {
@@ -29,18 +37,13 @@ namespace VA.ViewModels.Animations
             set { SetProperty(ref _input, value); }
         }
 
-        private List<int> _activeItems { get; set; }
-
         public string Pattern { get; private set; }
 
-        private string _result;
         public string Result
         {
             get { return _result; }
             set { SetProperty(ref _result, value); }
         }
-
-        private DelegateCommand _startAnimation;
 
         public DelegateCommand StartAnimation
         {
@@ -63,7 +66,6 @@ namespace VA.ViewModels.Animations
                                 }
                                 else
                                 {
-
                                     if (j == 0)
                                     {
                                         ResetActiveItems();
@@ -106,8 +108,6 @@ namespace VA.ViewModels.Animations
             }
         }
 
-        private DelegateCommand _stopAnimation;
-
         public DelegateCommand StopAnimation
         {
             get
@@ -123,6 +123,10 @@ namespace VA.ViewModels.Animations
             }
         }
 
+        #endregion
+
+        #region Public Constructors
+
         public StringMatchingModuleAnimationViewModel()
         {
             _mutex = new Mutex();
@@ -133,12 +137,9 @@ namespace VA.ViewModels.Animations
             _isFirstMatch = true;
         }
 
-        private void ResetModuleAnimation()
-        {
-            ResetActiveItems();
-            Result = "";
-            _isFirstMatch = true;
-        }
+        #endregion
+
+        #region Private Methods
 
         private void ResetActiveItems()
         {
@@ -148,5 +149,14 @@ namespace VA.ViewModels.Animations
             }
             _activeItems.Clear();
         }
+
+        private void ResetModuleAnimation()
+        {
+            ResetActiveItems();
+            Result = "";
+            _isFirstMatch = true;
+        }
+
+        #endregion
     }
 }

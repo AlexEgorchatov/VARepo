@@ -19,16 +19,26 @@
         </ResourceDictionary>
     </Window.Resources>
     
-    <Grid>
+    <Grid Background="#222">
         <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="8*"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <ListView ItemsSource="{Binding Modules}" ItemTemplateSelector="{StaticResource ModuleViewTemplateSelector}">
+        <TextBlock Text="Observe algorithms in action" VerticalAlignment="Center" FontSize="48" Foreground="#F5C81A" FontFamily="Do Hyeon"/>
+
+        <ListView Grid.Row="1" ItemsSource="{Binding Modules}" ItemTemplateSelector="{StaticResource ModuleViewTemplateSelector}" Background="#444">
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    <!--<Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>-->
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
         </ListView>

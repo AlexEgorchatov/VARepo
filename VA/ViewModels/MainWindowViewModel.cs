@@ -1,21 +1,21 @@
-﻿using Prism.Commands;
-using Prism.Mvvm;
-using System;
+﻿using Prism.Mvvm;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using VA.Interfaces;
 using VA.Modules;
 
 namespace VA.ViewModels
 {
-    class MainWindowViewModel : BindableBase
+    internal class MainWindowViewModel : BindableBase
     {
-        #region Properties
+        #region Private Fields
 
         private List<IModule> _modules;
+
+        #endregion
+
+        #region Public Properties
+
         public List<IModule> Modules
         {
             get { return _modules; }
@@ -24,15 +24,10 @@ namespace VA.ViewModels
 
         #endregion
 
-        #region Commands
-
-        #endregion
-
-        #region Constructors
+        #region Public Constructors
 
         public MainWindowViewModel()
         {
-
         }
 
         #endregion
@@ -47,7 +42,6 @@ namespace VA.ViewModels
                 new StringMatchingModule(),
                 new GridPathModule()
             };
-
         }
 
         #endregion

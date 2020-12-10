@@ -1,11 +1,4 @@
-﻿using Prism.Commands;
-using Prism.Mvvm;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using Prism.Mvvm;
 using System.Windows.Media;
 
 namespace VA.ViewModels.Animations
@@ -17,54 +10,33 @@ namespace VA.ViewModels.Animations
 
     public class GridPathModuleCellViewModel : BindableBase
     {
+        #region Private Fields
+
         private const double _cellSide = 60;
 
-        public double Width { get; }
-
-        public double Height { get; }
-
-        public double Top { get; }
-
-        public double Left { get; }
-
-        public int Distance { get; set; }
-
-        public bool IsVisited { get; set; }
-
         private ColorType _colorType;
-        public ColorType ColorType 
-        {
-            get { return _colorType; }
-            set
-            {
-                _colorType = value;
-                RaisePropertyChanged("BackgroundBrush");
-            } 
-        }
+
+        private SolidColorBrush _destinationBrush;
+
+        private SolidColorBrush _neutralBrush;
+
+        private SolidColorBrush _pathBrush;
+
+        private SolidColorBrush _searchBrush;
+
+        private SolidColorBrush _startBrush;
 
         private int _xCoordinate;
-        public int XCoordinate
-        {
-            get { return _xCoordinate; }
-            set { SetProperty(ref _xCoordinate, value); }
-        }
 
         private int _yCoordinate;
-        public int YCoordinate
-        {
-            get { return _yCoordinate; }
-            set { SetProperty(ref _yCoordinate, value); }
-        }
-        
-        private SolidColorBrush _neutralBrush;
-        private SolidColorBrush _startBrush;
-        private SolidColorBrush _destinationBrush;
-        private SolidColorBrush _pathBrush;
-        private SolidColorBrush _searchBrush;
+
+        #endregion
+
+        #region Public Properties
 
         public SolidColorBrush BackgroundBrush
         {
-            get 
+            get
             {
                 switch (ColorType)
                 {
@@ -89,6 +61,44 @@ namespace VA.ViewModels.Animations
             }
         }
 
+        public ColorType ColorType
+        {
+            get { return _colorType; }
+            set
+            {
+                _colorType = value;
+                RaisePropertyChanged("BackgroundBrush");
+            }
+        }
+
+        public int Distance { get; set; }
+
+        public double Height { get; }
+
+        public bool IsVisited { get; set; }
+
+        public double Left { get; }
+
+        public double Top { get; }
+
+        public double Width { get; }
+
+        public int XCoordinate
+        {
+            get { return _xCoordinate; }
+            set { SetProperty(ref _xCoordinate, value); }
+        }
+
+        public int YCoordinate
+        {
+            get { return _yCoordinate; }
+            set { SetProperty(ref _yCoordinate, value); }
+        }
+
+        #endregion
+
+        #region Public Constructors
+
         public GridPathModuleCellViewModel(int x, int y)
         {
             XCoordinate = x;
@@ -100,11 +110,13 @@ namespace VA.ViewModels.Animations
             Left = 15 + 60 * y;
             ColorType = ColorType.Neutral;
             IsVisited = false;
-            _neutralBrush = new SolidColorBrush(Colors.Gray);
+            _neutralBrush = new SolidColorBrush(Colors.White);
             _startBrush = new SolidColorBrush(Colors.Green);
             _destinationBrush = new SolidColorBrush(Colors.Red);
             _pathBrush = new SolidColorBrush(Colors.OrangeRed);
-            _searchBrush = new SolidColorBrush(Colors.Orange);
+            _searchBrush = new SolidColorBrush(Color.FromRgb(245, 200, 26));
         }
+
+        #endregion
     }
 }

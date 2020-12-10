@@ -9,14 +9,22 @@ namespace VA.Interfaces
 
     public interface IModule
     {
-        string Title { get; }
-
-        ModuleType ModuleType { get; }
-
-        Brush Background { get; }
+        #region Public Properties
 
         IAnimation Animation { get; }
 
+        Brush Background { get; }
+
+        ModuleType ModuleType { get; }
+
+        string Title { get; }
+
+        #endregion
+
+        #region Public Methods
+
         void StartAnimation();
+
+        #endregion
     }
 }

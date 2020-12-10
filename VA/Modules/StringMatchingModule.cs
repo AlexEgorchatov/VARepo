@@ -1,31 +1,40 @@
-﻿using System;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 using VA.Interfaces;
-using VA.ViewModels;
 using VA.ViewModels.Animations;
 
 namespace VA.Modules
 {
     public class StringMatchingModule : IModule
     {
-        public string Title { get; private set; }
-
-        public Brush Background { get; private set; }
+        #region Public Properties
 
         public IAnimation Animation { get; private set; }
 
+        public Brush Background { get; private set; }
+
         public ModuleType ModuleType => ModuleType.StringMatchingModule;
+
+        public string Title { get; private set; }
+
+        #endregion
+
+        #region Public Constructors
 
         public StringMatchingModule()
         {
-
         }
+
+        #endregion
+
+        #region Public Methods
 
         public void StartAnimation()
         {
             Title = "String Matching Module";
-            Background = new SolidColorBrush(Colors.Blue); 
+            Background = new SolidColorBrush(Color.FromRgb(119, 119, 119));
             Animation = new StringMatchingModuleAnimationViewModel();
         }
+
+        #endregion
     }
 }

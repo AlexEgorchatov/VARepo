@@ -1,13 +1,15 @@
 ﻿using Prism.Commands;
-using System.Timers;
 
 namespace VA.Interfaces
 {
     public interface IAnimation
     {
+        #region Public Properties
+
         DelegateCommand StartAnimation { get; }
 
         DelegateCommand StopAnimation { get; }
 
+        #endregion
     }
 }

@@ -3,27 +3,31 @@ using Prism.Mvvm;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
-using System.Windows;
 using VA.Interfaces;
 
 namespace VA.ViewModels
 {
     public class SortModuleAnimationViewModel : BindableBase, IAnimation
     {
-        private bool _isCanceled;
+        #region Private Fields
+
+        private const int _delayTime = 500;
         private readonly Mutex _mutex;
         private List<SortModuleItemViewModel> _animationItems;
         private double[] _initialHeights;
-        private const int _delayTime = 600;
+        private bool _isCanceled;
+        private DelegateCommand _startAnimation;
+        private DelegateCommand _stopAnimation;
+
+        #endregion
+
+        #region Public Properties
 
         public List<SortModuleItemViewModel> AnimationItems
         {
             get { return _animationItems; }
             set { SetProperty(ref _animationItems, value); }
         }
-
-        private DelegateCommand _startAnimation;
 
         public DelegateCommand StartAnimation
         {
@@ -74,8 +78,6 @@ namespace VA.ViewModels
             }
         }
 
-        private DelegateCommand _stopAnimation;
-
         public DelegateCommand StopAnimation
         {
             get
@@ -91,16 +93,20 @@ namespace VA.ViewModels
             }
         }
 
+        #endregion
+
+        #region Public Constructors
+
         public SortModuleAnimationViewModel()
         {
             _mutex = new Mutex();
             AnimationItems = new List<SortModuleItemViewModel>()
             {
                 new SortModuleItemViewModel(30, 300, 330, 60),
-                new SortModuleItemViewModel(30, 270, 330, 120),
-                new SortModuleItemViewModel(30, 180, 330, 180),
-                new SortModuleItemViewModel(30, 210, 330, 240),
-                new SortModuleItemViewModel(30, 240, 330, 300),
+                new SortModuleItemViewModel(30, 180, 330, 120),
+                new SortModuleItemViewModel(30, 210, 330, 180),
+                new SortModuleItemViewModel(30, 240, 330, 240),
+                new SortModuleItemViewModel(30, 270, 330, 300),
             };
 
             _initialHeights = new double[AnimationItems.Count];
@@ -110,6 +116,10 @@ namespace VA.ViewModels
             }
         }
 
+        #endregion
+
+        #region Private Methods
+
         private void ResetModuleAnimation()
         {
             for (int i = 0; i < AnimationItems.Count; i++)
@@ -118,5 +128,7 @@ namespace VA.ViewModels
             }
             AnimationItems.ForEach(i => i.IsActive = false);
         }
+
+        #endregion
     }
 }

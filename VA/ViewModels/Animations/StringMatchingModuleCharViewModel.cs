@@ -5,16 +5,24 @@ namespace VA.ViewModels.Animations
 {
     public class StringMatchingModuleCharViewModel : BindableBase
     {
+        #region Private Fields
+
         private SolidColorBrush _activeBrush;
 
         private SolidColorBrush _inactiveBrush;
+
+        private bool _isActive;
+
+        #endregion
+
+        #region Public Properties
+
+        public char Character { get; set; }
 
         public SolidColorBrush ForegroundBrush
         {
             get { return _isActive ? _activeBrush : _inactiveBrush; }
         }
-
-        private bool _isActive;
 
         public bool IsActive
         {
@@ -26,14 +34,17 @@ namespace VA.ViewModels.Animations
             }
         }
 
-        public char Character { get; set; }
+        #endregion
 
+        #region Public Constructors
 
         public StringMatchingModuleCharViewModel(char character)
         {
             Character = character;
-            _inactiveBrush = new SolidColorBrush(Colors.Black);
-            _activeBrush = new SolidColorBrush(Colors.Green);
+            _inactiveBrush = new SolidColorBrush(Colors.White);
+            _activeBrush = new SolidColorBrush(Color.FromRgb(245, 200, 26));
         }
+
+        #endregion
     }
 }

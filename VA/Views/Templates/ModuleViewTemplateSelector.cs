@@ -6,6 +6,8 @@ namespace VA.Views
 {
     public class ModuleViewTemplateSelector : DataTemplateSelector
     {
+        #region Public Methods
+
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             FrameworkElement element = container as FrameworkElement;
@@ -30,5 +32,7 @@ namespace VA.Views
 
             return null;
         }
+
+        #endregion
     }
 }
