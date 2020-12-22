@@ -14,22 +14,17 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using VA.ViewModels;
 
-namespace VA.Views
+namespace VA.Views.Pages
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for SortModulePage.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class SortModulePage : Page
     {
-        public MainWindow()
+        public SortModulePage(SortModulePageViewModel sortViewModel)
         {
             InitializeComponent();
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Properties["NavigationService"] = frame.NavigationService;
-            frame.Navigate(new HomePage());
+            DataContext = sortViewModel;
         }
     }
 }

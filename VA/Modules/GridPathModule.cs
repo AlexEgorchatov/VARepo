@@ -29,7 +29,7 @@ namespace VA.Modules
         #region Public Methods
 
 
-        public void StartAnimation()
+        public void InitializeModule()
         {
             Title = "Grid Path Module";
             Background = new SolidColorBrush(Color.FromRgb(119, 119, 119));

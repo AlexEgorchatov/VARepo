@@ -6,7 +6,7 @@
     <Duration x:Key="duration">0:0:0.4</Duration>
 
     <DataTemplate x:Key="SortModuleViewTemplate">
-        <Grid>
+        <Grid Background="Transparent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -44,22 +44,23 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseEnter">
-                        <i:InvokeCommandAction Command="{Binding Animation.StartAnimation}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="MouseLeave">
-                        <i:InvokeCommandAction Command="{Binding Animation.StopAnimation}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
             </Grid>
 
             <TextBlock Grid.Row="1" FontSize="24" Text="Sorting" HorizontalAlignment="Center" Foreground="White"/>
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseEnter">
+                    <i:InvokeCommandAction Command="{Binding Animation.StartAnimation}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseLeave">
+                    <i:InvokeCommandAction Command="{Binding Animation.StopAnimation}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
         </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="StringMatchingViewTemplate">
-        <Grid>
+        <Grid Background="Transparent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -74,7 +75,7 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="Input: " FontSize="24" Foreground="White"/>
+                        <TextBlock Text="Input: " FontSize="36" Foreground="White"/>
                         <ItemsControl ItemsSource="{Binding Input}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -83,36 +84,37 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <TextBlock Text="{Binding Character}" Foreground="{Binding ForegroundBrush}" FontSize="24"/>
+                                    <TextBlock Text="{Binding Character}" Foreground="{Binding ForegroundBrush}" FontSize="36"/>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="Pattern: " FontSize="24" Foreground="White"/>
-                        <TextBlock Text="{Binding Pattern}" FontSize="24" Foreground="White"/>
+                        <TextBlock Text="Pattern: " FontSize="36" Foreground="White"/>
+                        <TextBlock Text="{Binding Pattern}" FontSize="36" Foreground="White"/>
                     </StackPanel>
                     <StackPanel Grid.Row="2" Orientation="Horizontal"  VerticalAlignment="Center">
-                        <TextBlock Text="Found at: " FontSize="24" Foreground="White"/>
-                        <TextBlock Text="{Binding Result}" FontSize="24" Foreground="White"/>
+                        <TextBlock Text="Found at: " FontSize="36" Foreground="White"/>
+                        <TextBlock Text="{Binding Result}" FontSize="36" Foreground="White"/>
                     </StackPanel>
                 </Grid>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseEnter">
-                        <i:InvokeCommandAction Command="{Binding Animation.StartAnimation}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="MouseLeave">
-                        <i:InvokeCommandAction Command="{Binding Animation.StopAnimation}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
             </Grid>
 
             <TextBlock Grid.Row="1" FontSize="24" Text="String Matching" HorizontalAlignment="Center" Foreground="White"/>
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseEnter">
+                    <i:InvokeCommandAction Command="{Binding Animation.StartAnimation}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseLeave">
+                    <i:InvokeCommandAction Command="{Binding Animation.StopAnimation}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
         </Grid>
     </DataTemplate>
 
     <DataTemplate x:Key="GridPathViewTemplate">
-        <Grid>
+        <Grid Background="Transparent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
@@ -139,17 +141,18 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <i:Interaction.Triggers>
-                    <i:EventTrigger EventName="MouseEnter">
-                        <i:InvokeCommandAction Command="{Binding Animation.StartAnimation}"/>
-                    </i:EventTrigger>
-                    <i:EventTrigger EventName="MouseLeave">
-                        <i:InvokeCommandAction Command="{Binding Animation.StopAnimation}"/>
-                    </i:EventTrigger>
-                </i:Interaction.Triggers>
             </Grid>
 
             <TextBlock Grid.Row="1" FontSize="24" Text="Grid Path" HorizontalAlignment="Center" Foreground="White"/>
+
+            <i:Interaction.Triggers>
+                <i:EventTrigger EventName="MouseEnter">
+                    <i:InvokeCommandAction Command="{Binding Animation.StartAnimation}"/>
+                </i:EventTrigger>
+                <i:EventTrigger EventName="MouseLeave">
+                    <i:InvokeCommandAction Command="{Binding Animation.StopAnimation}"/>
+                </i:EventTrigger>
+            </i:Interaction.Triggers>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

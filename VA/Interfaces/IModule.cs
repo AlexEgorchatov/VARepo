@@ -23,7 +23,7 @@ namespace VA.Interfaces
 
         #region Public Methods
 
-        void StartAnimation();
+        void InitializeModule();
 
         #endregion
     }

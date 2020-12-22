@@ -1,0 +1,34 @@
+﻿<Page x:Class="VA.Views.Pages.SortModulePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:VA.Views.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="720" d:DesignWidth="1290"
+      Title="SortModulePage">
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="2*"/>
+            <RowDefinition Height="8*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <Button Height="30" Margin="10,0" Command="{Binding BackCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xE248;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="10,0"/>
+                    <TextBlock Text="Back" Margin="10,0"/>
+                </StackPanel>
+            </Button>
+            <TextBlock Grid.Row="0" Text="Sort Algorithms" VerticalAlignment="Center" FontSize="48" Foreground="#F5C81A" Margin="10"/>
+        </StackPanel>
+
+        <TabControl Grid.Row="1">
+            <TabItem Header="Algorithm1"/>
+            <TabItem Header="Alogirhtm2"/>
+        </TabControl>
+
+    </Grid>
+</Page>
