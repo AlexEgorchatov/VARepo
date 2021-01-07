@@ -7,27 +7,95 @@
       mc:Ignorable="d" 
       d:DesignHeight="720" d:DesignWidth="1290"
       Title="SortModulePage">
-    
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <CubicEase x:Key="easing" EasingMode="EaseOut"/>
+            <Duration x:Key="duration">0:0:0.4</Duration>
+        </ResourceDictionary>
+    </Page.Resources>
+
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="8*"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="110"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal">
-            <Button Height="30" Margin="10,0" Command="{Binding BackCommand}">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Top" Margin="0,10,0,0">
+            <Button Height="30" Margin="0,0,10,0" Command="{Binding BackCommand}">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="&#xE248;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="10,0"/>
-                    <TextBlock Text="Back" Margin="10,0"/>
+                    <TextBlock Text="&#xE248;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="10,0" FontSize="14"/>
+                    <TextBlock Text="Back" Margin="10,0" FontSize="14"/>
                 </StackPanel>
             </Button>
-            <TextBlock Grid.Row="0" Text="Sort Algorithms" VerticalAlignment="Center" FontSize="48" Foreground="#F5C81A" Margin="10"/>
+            <TextBlock Grid.Row="0" Text="Sort Algorithms" VerticalAlignment="Center" FontSize="48" Foreground="#F5C81A" Margin="0"/>
         </StackPanel>
 
-        <TabControl Grid.Row="1">
-            <TabItem Header="Algorithm1"/>
-            <TabItem Header="Alogirhtm2"/>
+        <Grid Grid.Row="1" Margin="0,5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="60"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0" Text="Input" Foreground="#F5C81A" FontSize="24" Margin="0,0,10,0" VerticalAlignment="Center"/>
+            <TextBox Grid.Column="1" Height="30" Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" FontFamily="{DynamicResource MainFont}" FontSize="14" VerticalContentAlignment="Center" Padding="5,0"/>
+            <Button Grid.Column="2" Height="30" Margin="10,0,0,0" Command="{Binding BackCommand}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="&#xE102;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="10,0" FontSize="14"/>
+                    <TextBlock Text="Run" Margin="10,0" FontSize="14"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+        <TabControl Grid.Row="2" ItemsSource="{Binding SortTabs}" FontSize="14">
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <Grid Background="Gray">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="8*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <Grid Grid.Row="0">
+                            <ItemsControl ItemsSource="{Binding Inputss}" Margin="30">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas IsItemsHost="True" Background="Transparent"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style TargetType="{x:Type ContentPresenter}">
+                                        <Setter Property="Canvas.Top" Value="{Binding Top}"/>
+                                        <Setter Property="Canvas.Left" Value="{Binding Left}"/>
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid x:Name="container" Width="{Binding Width}" Height="{Binding Height, Mode=OneTime}" Tag="{Binding Height, NotifyOnTargetUpdated=True}" Background="{Binding BackgroundBrush}">
+                                            <Grid.Triggers>
+                                                <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                                                    <BeginStoryboard>
+                                                        <!--<Storyboard>
+                                                            <DoubleAnimation Storyboard.TargetProperty="Height" To="{Binding ElementName=container, Path=Tag}" Duration="{StaticResource duration}" EasingFunction="{StaticResource easing}"/>
+                                                        </Storyboard>-->
+                                                    </BeginStoryboard>
+                                                </EventTrigger>
+                                            </Grid.Triggers>
+                                            <Grid.RenderTransform>
+                                                <RotateTransform Angle="180"/>
+                                            </Grid.RenderTransform>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+
+                        <Slider Grid.Row="1" TickPlacement="BottomRight" Maximum="8" TickFrequency="1" IsSnapToTickEnabled="True" VerticalAlignment="Center" HorizontalAlignment="Left" Width="300" Margin="30,0"/>
+                    </Grid>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
         </TabControl>
 
     </Grid>
