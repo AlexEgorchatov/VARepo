@@ -33,12 +33,13 @@ namespace VA.ViewModels
                 {
                     if (Input == null) return;
 
+                    SortItems.Clear();
                     string[] numbers = Input.Split(' ');
                     for (int i = 0; i < numbers.Length; i++)
                     {
                         if(numbers[i] != "")
                         {
-                            SortItems.Add(new SortModuleItemViewModel(30, 30 * (i + 1), 330, 60 * (i + 1)));
+                            SortItems.Add(new SortModuleItemViewModel(30, Convert.ToInt32(numbers[i]), 270, 45 * (i + 1), Convert.ToInt32(numbers[i])));
                         }
                     }
                     IsApplied = true;

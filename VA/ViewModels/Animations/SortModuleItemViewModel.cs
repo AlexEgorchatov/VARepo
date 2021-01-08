@@ -13,6 +13,7 @@ namespace VA.ViewModels
         private bool _isActive;
         private double _left;
         private double _top;
+        private int _value;
         private double _width;
 
         #endregion
@@ -52,6 +53,12 @@ namespace VA.ViewModels
             set { SetProperty(ref _top, value); }
         }
 
+        public int Value
+        {
+            get { return _value; }
+            set { SetProperty(ref _value, value); }
+        }
+
         public double Width
         {
             get { return _width; }
@@ -62,12 +69,13 @@ namespace VA.ViewModels
 
         #region Public Constructors
 
-        public SortModuleItemViewModel(double width, double height, double top, double left)
+        public SortModuleItemViewModel(double width, double height, double top, double left, int value)
         {
             Width = width;
             Height = height;
             Top = top;
             Left = left;
+            Value = value;
             _inactiveBrush = new SolidColorBrush(Colors.White);
             _activeBrush = new SolidColorBrush(Color.FromRgb(245, 200, 26));
         }

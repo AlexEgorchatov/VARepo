@@ -102,11 +102,11 @@ namespace VA.ViewModels
             _mutex = new Mutex();
             AnimationItems = new List<SortModuleItemViewModel>()
             {
-                new SortModuleItemViewModel(30, 300, 330, 60),
-                new SortModuleItemViewModel(30, 180, 330, 120),
-                new SortModuleItemViewModel(30, 210, 330, 180),
-                new SortModuleItemViewModel(30, 240, 330, 240),
-                new SortModuleItemViewModel(30, 270, 330, 300),
+                new SortModuleItemViewModel(30, 300, 330, 60, 0),
+                new SortModuleItemViewModel(30, 180, 330, 120, 0),
+                new SortModuleItemViewModel(30, 210, 330, 180, 0),
+                new SortModuleItemViewModel(30, 240, 330, 240, 0),
+                new SortModuleItemViewModel(30, 270, 330, 300, 0),
             };
 
             _initialHeights = new double[AnimationItems.Count];
