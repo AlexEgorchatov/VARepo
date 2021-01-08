@@ -2,6 +2,7 @@
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Navigation;
@@ -18,7 +19,7 @@ namespace VA.ViewModels
         private bool _isApplied;
         private Regex _regularExpression;
         private DelegateCommand _runCommand;
-        private List<SortModuleItemViewModel> _sortItems;
+        private ObservableCollection<SortModuleItemViewModel> _sortItems;
 
         #endregion
 
@@ -94,7 +95,7 @@ namespace VA.ViewModels
             }
         }
 
-        public List<SortModuleItemViewModel> SortItems
+        public ObservableCollection<SortModuleItemViewModel> SortItems
         {
             get { return _sortItems; }
             set { SetProperty(ref _sortItems, value); }
@@ -110,7 +111,7 @@ namespace VA.ViewModels
         {
             _regularExpression = new Regex(@"^[0-9]+(\s[0-9]+)*(\s)?$");
             SortTabs = new List<string>() { "Bubble Sort", "Quick Sort" };
-            SortItems = new List<SortModuleItemViewModel>();
+            SortItems = new ObservableCollection<SortModuleItemViewModel>();
             IsApplied = false;
         }
 
