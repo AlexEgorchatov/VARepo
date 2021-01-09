@@ -43,6 +43,7 @@
 
             <TextBlock Grid.Column="0" Text="Input" Foreground="#F5C81A" FontSize="24" Margin="0,0,10,0" VerticalAlignment="Center"/>
             <TextBox Grid.Column="1" Height="30" Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" FontFamily="{DynamicResource MainFont}" FontSize="14" VerticalContentAlignment="Center" Padding="5,0" Margin="0,0,10,0"/>
+            <TextBlock Grid.Column="1" Text="Ex: &quot;10 20 30 40 78&quot;. Maximum value is 99. Maximum number of elements is 25" Foreground="LightGray" VerticalAlignment="Bottom" Margin="0,0,0,18"/>
             <Grid Grid.Column="2" VerticalAlignment="Top" Margin="0,25,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
@@ -74,7 +75,7 @@
                         </Grid.RowDefinitions>
 
                         <Grid Grid.Row="0">
-                            <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.SortItems}" Margin="30" HorizontalAlignment="Center" Width="1143">
+                            <ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.SortItems}" Margin="30">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas IsItemsHost="True" Background="Transparent"/>
@@ -88,13 +89,13 @@
                                 </ItemsControl.ItemContainerStyle>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Grid Margin="0,-20,0,0">
+                                        <Grid>
                                             <Grid.RowDefinitions>
                                                 <RowDefinition Height="*"/>
                                                 <RowDefinition Height="30"/>
                                             </Grid.RowDefinitions>
                                             
-                                            <Grid x:Name="container" Width="{Binding Width}" Height="{Binding Height, Mode=OneTime}" Tag="{Binding Height, NotifyOnTargetUpdated=True}" Background="{Binding BackgroundBrush}" Margin="0,0,0,0">
+                                            <Grid x:Name="container" Width="{Binding Width}" Height="{Binding Height, Mode=OneTime}" Tag="{Binding Height, NotifyOnTargetUpdated=True}" Background="{Binding BackgroundBrush}" Margin="0,40,0,0" RenderTransformOrigin="0.5, 0">
                                                 <!--<Grid.Triggers>
                                                 <EventTrigger RoutedEvent="Binding.TargetUpdated">
                                                     <BeginStoryboard>
@@ -108,7 +109,7 @@
                                                     <RotateTransform Angle="180"/>
                                                 </Grid.RenderTransform>
                                             </Grid>
-                                            <TextBlock Grid.Row="1" Text="{Binding Value}" FontSize="16" HorizontalAlignment="Left" Margin="-28,-20,0,0"/>
+                                            <TextBlock Grid.Row="1" Text="{Binding Value}" FontSize="16" HorizontalAlignment="Center" Margin="{Binding ColumnMargin}"/>
                                         </Grid>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>

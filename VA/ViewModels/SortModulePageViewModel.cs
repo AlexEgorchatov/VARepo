@@ -39,7 +39,7 @@ namespace VA.ViewModels
                     {
                         if(numbers[i] != "")
                         {
-                            SortItems.Add(new SortModuleItemViewModel(30, Convert.ToInt32(numbers[i]), 270, 45 * (i + 1), Convert.ToInt32(numbers[i])));
+                            SortItems.Add(new SortModuleItemViewModel(30, Convert.ToInt32(numbers[i]) * 3, 270, 15 + 45 * i, Convert.ToInt32(numbers[i])));
                         }
                     }
                     IsApplied = true;
@@ -110,7 +110,7 @@ namespace VA.ViewModels
 
         public SortModulePageViewModel()
         {
-            _regularExpression = new Regex(@"^[0-9]+(\s[0-9]+)*(\s)?$");
+            _regularExpression = new Regex(@"^[0-9]{1,2}(\s[0-9]{1,2}){0,24}(\s)?$");
             SortTabs = new List<string>() { "Bubble Sort", "Quick Sort" };
             SortItems = new ObservableCollection<SortModuleItemViewModel>();
             IsApplied = false;
