@@ -36,7 +36,11 @@ namespace VA.ViewModels
         public double Height
         {
             get { return _height; }
-            set { SetProperty(ref _height, value); }
+            set 
+            {
+                SetProperty(ref _height, value);
+                ColumnMargin = new Thickness(0, -value, 0, 0);
+            }
         }
 
         public bool IsActive
@@ -86,7 +90,6 @@ namespace VA.ViewModels
             Value = value;
             _inactiveBrush = new SolidColorBrush(Colors.White);
             _activeBrush = new SolidColorBrush(Color.FromRgb(245, 200, 26));
-            ColumnMargin = new Thickness(0, -height, 0, 0);
         }
 
         #endregion

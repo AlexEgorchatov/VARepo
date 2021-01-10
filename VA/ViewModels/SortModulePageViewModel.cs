@@ -39,8 +39,12 @@ namespace VA.ViewModels
                     {
                         if(numbers[i] != "")
                         {
-                            SortItems.Add(new SortModuleItemViewModel(30, Convert.ToInt32(numbers[i]) * 3, 270, 15 + 45 * i, Convert.ToInt32(numbers[i])));
+                            SortItems.Add(new SortModuleItemViewModel(30, 0, 270, 15 + 45 * i, Convert.ToInt32(numbers[i])));
                         }
+                    }
+                    for (int i = 0; i < numbers.Length; i++)
+                    {
+                        SortItems[i].Height = Convert.ToInt32(numbers[i]) * 3;
                     }
                     IsApplied = true;
                 }));
