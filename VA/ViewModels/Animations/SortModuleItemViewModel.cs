@@ -1,5 +1,4 @@
 ﻿using Prism.Mvvm;
-using System.Windows;
 using System.Windows.Media;
 
 namespace VA.ViewModels
@@ -9,7 +8,6 @@ namespace VA.ViewModels
         #region Private Fields
 
         private SolidColorBrush _activeBrush;
-        private Thickness _columnMargin;
         private double _height;
         private SolidColorBrush _inactiveBrush;
         private bool _isActive;
@@ -27,20 +25,10 @@ namespace VA.ViewModels
             get { return _isActive ? _activeBrush : _inactiveBrush; }
         }
 
-        public Thickness ColumnMargin
-        {
-            get { return _columnMargin; }
-            set { SetProperty(ref _columnMargin, value); }
-        }
-
         public double Height
         {
             get { return _height; }
-            set 
-            {
-                SetProperty(ref _height, value);
-                ColumnMargin = new Thickness(0, -value, 0, 0);
-            }
+            set { SetProperty(ref _height, value); }
         }
 
         public bool IsActive

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
@@ -20,9 +21,8 @@ namespace VA.ViewModels
         private int _delayTime;
         private string _input;
         private bool _isAnimationPaused;
-        private bool _isInitialState;
+        private bool _isAnimationRunning;
         private bool _isApplied;
-        private bool _isCommandPressed;
         private double _panelWidth;
         private DelegateCommand _pauseCommand;
         private Regex _regularExpression;
@@ -32,6 +32,7 @@ namespace VA.ViewModels
         private int _sliderValue;
         private ObservableCollection<SortModuleItemViewModel> _sortItems;
         private TaskCompletionSource<bool> _tcs;
+        private int _quickI;
 
         #endregion
 
@@ -46,7 +47,7 @@ namespace VA.ViewModels
                     if (Input == null) return;
                     FillSortItems();
                     IsApplied = true;
-                }));
+                }, () => !string.IsNullOrEmpty(Input)));
             }
         }
 
@@ -76,27 +77,36 @@ namespace VA.ViewModels
                 if (_regularExpression.IsMatch(value) || value.Length == 0)
                 {
                     SetProperty(ref _input, value);
+                    IsAnimationRunning = false;
+                    IsAnimationPaused = false;
                     if (IsApplied) IsApplied = false;
                 }
+                ApplyCommand.RaiseCanExecuteChanged();
             }
         }
 
         public bool IsAnimationPaused
         {
             get { return _isAnimationPaused; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref _isAnimationPaused, value);
                 if (value)
                 {
                     _tcs = new TaskCompletionSource<bool>();
                 }
-                else
+                else if (_tcs != null)
                 {
                     _tcs.SetResult(false);
                     _tcs = null;
                 }
             }
+        }
+
+        public bool IsAnimationRunning
+        {
+            get { return _isAnimationRunning; }
+            set { SetProperty(ref _isAnimationRunning, value); }
         }
 
         public bool IsApplied
@@ -117,6 +127,13 @@ namespace VA.ViewModels
         {
             get { return _panelWidth; }
             set { SetProperty(ref _panelWidth, value); }
+        }
+
+        private Duration _animationDuration;
+        public Duration AnimationDuration
+        {
+            get { return _animationDuration; }
+            set { SetProperty(ref _animationDuration, value); }
         }
 
         public DelegateCommand PauseCommand
@@ -141,21 +158,13 @@ namespace VA.ViewModels
             }
         }
 
-        //60 10 20 30 50 40
         public DelegateCommand RunCommand
         {
             get
             {
                 return _runCommand ?? (_runCommand = new DelegateCommand(() =>
                 {
-                    if (!_isInitialState)
-                    {
-                        _isCommandPressed = true;
-                        FillSortItems();
-                    }
-                    _isInitialState = false;
-                    Task.Delay(_delayTime);
-
+                    IsAnimationRunning = true;
                     switch (SelectedTab)
                     {
                         case 0:
@@ -163,7 +172,7 @@ namespace VA.ViewModels
                             break;
 
                         case 1:
-                            //QuickSort();
+                            //QuickSort(0, SortItems.Count - 1);
                             break;
 
                         default:
@@ -219,7 +228,7 @@ namespace VA.ViewModels
                 { 9, 200},
             };
             SliderValue = 5;
-            _isInitialState = true;
+            AnimationDuration = new Duration(TimeSpan.FromMilliseconds(1000));
         }
 
         #endregion
@@ -252,11 +261,6 @@ namespace VA.ViewModels
                     {
                         await _tcs.Task;
                     }
-                    if (_isCommandPressed)
-                    {
-                        _isInitialState = true;
-                        return;
-                    }
                 }
 
                 if (!isSwapped)
@@ -266,10 +270,7 @@ namespace VA.ViewModels
             }
 
             ResetColors();
-        }
-
-        private void QuickSort()
-        {
+            IsAnimationRunning = false;
         }
 
         private void FillSortItems()
@@ -284,7 +285,55 @@ namespace VA.ViewModels
                 }
             }
             PanelWidth = 15 + (45 * numbers.Length);
-            _isInitialState = true;
+        }
+
+        //Flashsort
+        private void QuickSort(int low, int high)
+        {
+            if(low < high)
+            {
+                Partition(low, high);
+                QuickSort(low, _quickI - 1);
+                QuickSort(_quickI + 1, high);
+            }
+        }
+
+        private async void Partition(int low, int high)
+        {
+            int pivot = SortItems[SortItems.Count - 1].Value;
+            _quickI = low - 1;
+
+            for (int j = low; j < high; j++)
+            {
+                ResetColors();
+                if (SortItems[j].Value < pivot)
+                {
+                    _quickI++;
+                    var tempHeight = SortItems[_quickI].Height;
+                    SortItems[_quickI].Height = SortItems[j].Height;
+                    SortItems[j].Height = tempHeight;
+                    var tempValue = SortItems[_quickI].Value;
+                    SortItems[_quickI].Value = SortItems[j].Value;
+                    SortItems[j].Value = tempValue;
+                }
+                SortItems[_quickI].IsActive = true;
+                SortItems[j].IsActive = true;
+                await Task.Delay(_delayTime);
+            }
+
+            var temp = SortItems[_quickI + 1].Height;
+            SortItems[_quickI + 1].Height = SortItems[high].Height;
+            SortItems[high].Height = temp;
+            var temp1 = SortItems[_quickI + 1].Value;
+            SortItems[_quickI + 1].Value = SortItems[high].Value;
+            SortItems[high].Value = temp1;
+
+            SortItems[_quickI + 1].IsActive = true;
+            SortItems[high].IsActive = true;
+            await Task.Delay(_delayTime);
+            ResetColors();
+
+            _quickI++;
         }
 
         private void ResetColors()

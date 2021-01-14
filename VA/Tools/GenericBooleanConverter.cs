@@ -6,8 +6,10 @@ using System.Windows.Media;
 
 namespace VA.Tools
 {
-    class GenericBooleanConverter : IValueConverter, IMultiValueConverter
+    internal class GenericBooleanConverter : IValueConverter, IMultiValueConverter
     {
+        #region Public Methods
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             bool val = System.Convert.ToBoolean(value);
@@ -74,5 +76,7 @@ namespace VA.Tools
         {
             throw new NotImplementedException();
         }
+
+        #endregion
     }
 }

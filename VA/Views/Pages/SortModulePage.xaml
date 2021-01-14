@@ -50,13 +50,13 @@
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
-                <Button Grid.Row="0" HorizontalAlignment="Center" Height="30" Margin="0,10,0,5" Command="{Binding ApplyCommand}" VerticalAlignment="Top">
+                <Button Grid.Row="0" HorizontalAlignment="Center" Height="30" Margin="0,10,0,5" Command="{Binding ApplyCommand}" VerticalAlignment="Top" IsEnabled="{Binding IsAnimationRunning, Converter={StaticResource GenericBooleanConverter}, ConverterParameter=Inverse}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE10B;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="10,0" FontSize="14"/>
                         <TextBlock Text="Apply" Margin="10,0" FontSize="14"/>
                     </StackPanel>
                 </Button>
-                <Button Grid.Row="1" Height="30" Command="{Binding RunCommand}" Visibility="{Binding IsApplied, Converter={StaticResource GenericBooleanConverter}, FallbackValue=Collapsed}" VerticalAlignment="Bottom">
+                <Button Grid.Row="1" Height="30" Command="{Binding RunCommand}" Visibility="{Binding IsApplied, Converter={StaticResource GenericBooleanConverter}, FallbackValue=Collapsed}" VerticalAlignment="Bottom" IsEnabled="{Binding IsAnimationRunning,Converter={StaticResource GenericBooleanConverter}, ConverterParameter=Inverse}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE102;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="10,0" FontSize="14"/>
                         <TextBlock Text="Run" Margin="13,0" FontSize="14"/>
@@ -90,12 +90,7 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="*"/>
-                                                <RowDefinition Height="30"/>
-                                            </Grid.RowDefinitions>
-
-                                            <Grid x:Name="container" Width="{Binding Width}" Height="{Binding Height, Mode=OneTime}" Tag="{Binding Height, NotifyOnTargetUpdated=True}" Background="{Binding BackgroundBrush}" Margin="0,40,0,0" RenderTransformOrigin="0.5, 0">
+                                            <Grid x:Name="container" Width="{Binding Width}" Height="{Binding Height, Mode=OneTime}" Tag="{Binding Height, NotifyOnTargetUpdated=True}" VerticalAlignment="Top" Background="{Binding BackgroundBrush}" Margin="0,40,0,0" RenderTransformOrigin="0.5, 0">
                                                 <Grid.Triggers>
                                                     <EventTrigger RoutedEvent="Loaded">
                                                         <EventTrigger.Actions>
@@ -104,12 +99,12 @@
                                                                     <DoubleAnimation BeginTime="0:0:0" Storyboard.TargetProperty="RenderTransform.Children[0].ScaleY" To="1" Duration="{StaticResource duration}" EasingFunction="{StaticResource easing}"/>
                                                                 </Storyboard>
                                                             </BeginStoryboard>
-                                                        </EventTrigger.Actions>                                                         
+                                                        </EventTrigger.Actions>
                                                     </EventTrigger>
                                                     <EventTrigger RoutedEvent="Binding.TargetUpdated">
                                                         <BeginStoryboard>
                                                             <Storyboard>
-                                                                <DoubleAnimation Storyboard.TargetProperty="Height" To="{Binding ElementName=container, Path=Tag}" Duration="{StaticResource duration}" EasingFunction="{StaticResource easing}"/>
+                                                                <DoubleAnimation Storyboard.TargetProperty="Height" To="{Binding ElementName=container, Path=Tag}" Duration="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.AnimationDuration}" EasingFunction="{StaticResource easing}"/>
                                                             </Storyboard>
                                                         </BeginStoryboard>
                                                     </EventTrigger>
@@ -121,25 +116,26 @@
                                                     </TransformGroup>
                                                 </Grid.RenderTransform>
                                             </Grid>
-                                            <TextBlock Grid.Row="1" Text="{Binding Value}" FontSize="16" HorizontalAlignment="Center" Margin="{Binding ColumnMargin}"/>
+                                            <TextBlock Text="{Binding Value}" FontSize="16" HorizontalAlignment="Center" Margin="0,45,0,0"/>
                                         </Grid>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </Grid>
 
-                        <StackPanel DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Page}}, Path=DataContext}" Grid.Row="1" Orientation="Horizontal">
+                        <StackPanel Grid.Row="1" Orientation="Horizontal"
+                                    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Page}}, Path=DataContext}">
                             <TextBlock Text="Slower" VerticalAlignment="Center" Margin="10,0,0,0"/>
                             <Slider Grid.Row="1" Value="{Binding SliderValue}" TickPlacement="BottomRight" Minimum="1" Maximum="9" TickFrequency="1" IsSnapToTickEnabled="True" VerticalAlignment="Top" HorizontalAlignment="Left" Width="300" Margin="10"/>
                             <TextBlock Text="Faster" VerticalAlignment="Center" Margin="0,0,20,0"/>
-                            <Button Height="30" Width="90" Command="{Binding PauseCommand}" VerticalAlignment="Center"
+                            <Button Height="30" Width="90" Command="{Binding PauseCommand}" VerticalAlignment="Center" IsEnabled="{Binding IsAnimationRunning}"
                                     Visibility="{Binding IsAnimationPaused, Converter={StaticResource GenericBooleanConverter}, ConverterParameter=Reverse}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="&#xE103;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="5,0" FontSize="16" FontWeight="ExtraBold"/>
                                     <TextBlock Text="Stop" Margin="5,0" FontSize="14"/>
                                 </StackPanel>
                             </Button>
-                            <Button Height="30" Width="90" Command="{Binding ResumeCommand}" VerticalAlignment="Center"
+                            <Button Height="30" Width="90" Command="{Binding ResumeCommand}" VerticalAlignment="Center" IsEnabled="{Binding IsAnimationRunning}"
                                     Visibility="{Binding IsAnimationPaused, Converter={StaticResource GenericBooleanConverter}, FallbackValue=Collapsed}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="&#xE102;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="5,0" FontSize="16" FontWeight="ExtraBold"/>
