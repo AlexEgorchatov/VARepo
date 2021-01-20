@@ -1,12 +1,8 @@
 ﻿using System.Windows.Media;
+using VA.Resources;
 
 namespace VA.Interfaces
 {
-    public enum ModuleType
-    {
-        SortModule, StringMatchingModule, GridPathModule
-    }
-
     public interface IModule
     {
         #region Public Properties

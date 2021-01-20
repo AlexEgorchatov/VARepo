@@ -1,5 +1,6 @@
 ﻿using Prism.Mvvm;
 using System.Windows.Media;
+using VA.Resources;
 
 namespace VA.ViewModels
 {
@@ -7,14 +8,12 @@ namespace VA.ViewModels
     {
         #region Private Fields
 
-        private SolidColorBrush _activeBrush;
         private double _height;
-        private SolidColorBrush _inactiveBrush;
-        private bool _isActive;
         private double _left;
         private double _top;
         private int _value;
         private double _width;
+        private SortItemsState _state;
 
         #endregion
 
@@ -22,7 +21,23 @@ namespace VA.ViewModels
 
         public SolidColorBrush BackgroundBrush
         {
-            get { return _isActive ? _activeBrush : _inactiveBrush; }
+            get
+            {
+                switch (State)
+                {
+                    case SortItemsState.Inactive:
+                        return new SolidColorBrush(Color.FromRgb(255, 255, 255));
+
+                    case SortItemsState.Active:
+                        return new SolidColorBrush(Color.FromRgb(245, 200, 26));
+
+                    case SortItemsState.Pivot:
+                        return new SolidColorBrush(Color.FromRgb(105, 255, 116));
+
+                    default:
+                        return null;
+                }
+            }
         }
 
         public double Height
@@ -31,13 +46,13 @@ namespace VA.ViewModels
             set { SetProperty(ref _height, value); }
         }
 
-        public bool IsActive
+        public SortItemsState State
         {
-            get { return _isActive; }
+            get { return _state; }
             set
             {
-                _isActive = value;
-                RaisePropertyChanged("BackgroundBrush");
+                _state = value;
+                RaisePropertyChanged(nameof(BackgroundBrush));
             }
         }
 
@@ -76,8 +91,6 @@ namespace VA.ViewModels
             Top = top;
             Left = left;
             Value = value;
-            _inactiveBrush = new SolidColorBrush(Colors.White);
-            _activeBrush = new SolidColorBrush(Color.FromRgb(245, 200, 26));
         }
 
         #endregion
@@ -86,7 +99,7 @@ namespace VA.ViewModels
 
         public override string ToString()
         {
-            return $"{Left} | {Height}";
+            return $"{Left} | {Value}";
         }
 
         #endregion

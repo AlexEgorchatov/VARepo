@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using VA.Interfaces;
+using VA.Resources;
 
 namespace VA.Views
 {

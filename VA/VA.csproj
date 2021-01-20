@@ -7,12 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Prism.Unity" Version="8.0.0.1909" />
-    <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
+    <Compile Remove="ViewModels\BubbleSortViewModel.cs" />
+    <Compile Remove="ViewModels\QuickSortViewModel.cs" />
+    <Compile Remove="ViewModels\SortBaseViewModel.cs" />
+    <Compile Remove="ViewModels\SortPageViewModel.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Resources\" />
+    <PackageReference Include="Prism.Unity" Version="8.0.0.1909" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
   </ItemGroup>
 
 </Project>

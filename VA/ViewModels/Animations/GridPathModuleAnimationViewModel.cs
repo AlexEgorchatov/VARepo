@@ -195,7 +195,7 @@ namespace VA.ViewModels.Animations
         {
             get
             {
-                return _stopAnimation ?? (_stopAnimation = new DelegateCommand(async () =>
+                return _stopAnimation ?? (_stopAnimation = new DelegateCommand(() =>
                 {
                     if (_mutex.WaitOne())
                     {

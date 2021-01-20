@@ -3,11 +3,13 @@ using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
+using VA.Resources;
 
 namespace VA.ViewModels
 {
@@ -28,11 +30,10 @@ namespace VA.ViewModels
         private Regex _regularExpression;
         private DelegateCommand _resumeCommand;
         private DelegateCommand _runCommand;
-        private int _selectedTab;
+        private string _selectedTab;
         private int _sliderValue;
         private ObservableCollection<SortModuleItemViewModel> _sortItems;
         private TaskCompletionSource<bool> _tcs;
-        private int _quickI;
 
         #endregion
 
@@ -162,30 +163,35 @@ namespace VA.ViewModels
         {
             get
             {
-                return _runCommand ?? (_runCommand = new DelegateCommand(() =>
+                return _runCommand ?? (_runCommand = new DelegateCommand(async () =>
                 {
                     IsAnimationRunning = true;
                     switch (SelectedTab)
                     {
-                        case 0:
-                            BubbleSort();
+                        case "Bubble Sort":
+                            await BubbleSort();
                             break;
 
-                        case 1:
-                            //QuickSort(0, SortItems.Count - 1);
+                        case "Quick Sort":
+                            await QuickSort(0, SortItems.Count - 1);
                             break;
 
                         default:
                             break;
                     }
+                    IsAnimationRunning = false;
                 }));
             }
         }
 
-        public int SelectedTab
+        public string SelectedTab
         {
             get { return _selectedTab; }
-            set { SetProperty(ref _selectedTab, value); }
+            set 
+            {
+                if (IsAnimationRunning) return;
+                SetProperty(ref _selectedTab, value); 
+            }
         }
 
         public int SliderValue
@@ -195,6 +201,14 @@ namespace VA.ViewModels
             {
                 SetProperty(ref _sliderValue, value);
                 _delayTime = _correspondingSliderDelay[value];
+                if(_delayTime < 400)
+                {
+                    AnimationDuration = new Duration(TimeSpan.FromMilliseconds(_delayTime));
+                }
+                else
+                {
+                    AnimationDuration = new Duration(TimeSpan.FromMilliseconds(400));
+                }
             }
         }
 
@@ -228,14 +242,14 @@ namespace VA.ViewModels
                 { 9, 200},
             };
             SliderValue = 5;
-            AnimationDuration = new Duration(TimeSpan.FromMilliseconds(1000));
+            AnimationDuration = new Duration(TimeSpan.FromMilliseconds(400));
         }
 
         #endregion
 
         #region Private Methods
 
-        private async void BubbleSort()
+        private async Task BubbleSort()
         {
             for (int i = 0; i < SortItems.Count - 1; i++)
             {
@@ -253,8 +267,8 @@ namespace VA.ViewModels
                         SortItems[j + 1].Value = tempValue;
                         isSwapped = true;
                     }
-                    SortItems[j].IsActive = true;
-                    SortItems[j + 1].IsActive = true;
+                    SortItems[j].State = SortItemsState.Active;
+                    SortItems[j + 1].State = SortItemsState.Active;
                     await Task.Delay(_delayTime);
 
                     if (IsAnimationPaused)
@@ -270,7 +284,6 @@ namespace VA.ViewModels
             }
 
             ResetColors();
-            IsAnimationRunning = false;
         }
 
         private void FillSortItems()
@@ -288,59 +301,61 @@ namespace VA.ViewModels
         }
 
         //Flashsort
-        private void QuickSort(int low, int high)
+        private async Task QuickSort(int low, int high)
         {
             if(low < high)
             {
-                Partition(low, high);
-                QuickSort(low, _quickI - 1);
-                QuickSort(_quickI + 1, high);
+                int pi = await Partition(low, high);
+                await QuickSort(low, pi - 1);
+                await QuickSort(pi + 1, high);
             }
         }
 
-        private async void Partition(int low, int high)
+        private async Task<int> Partition(int low, int high)
         {
-            int pivot = SortItems[SortItems.Count - 1].Value;
-            _quickI = low - 1;
+            int pivot = SortItems[high].Value;
+            int i = low - 1;
 
             for (int j = low; j < high; j++)
             {
                 ResetColors();
-                if (SortItems[j].Value < pivot)
+                SortItems[high].State = SortItemsState.Pivot;
+                SortItems[j].State = SortItemsState.Active;
+                if (SortItems[j].Value <= pivot)
                 {
-                    _quickI++;
-                    var tempHeight = SortItems[_quickI].Height;
-                    SortItems[_quickI].Height = SortItems[j].Height;
+                    i++;
+                    var tempHeight = SortItems[i].Height;
+                    SortItems[i].Height = SortItems[j].Height;
                     SortItems[j].Height = tempHeight;
-                    var tempValue = SortItems[_quickI].Value;
-                    SortItems[_quickI].Value = SortItems[j].Value;
+                    var tempValue = SortItems[i].Value;
+                    SortItems[i].Value = SortItems[j].Value;
                     SortItems[j].Value = tempValue;
+                    SortItems[i].State = SortItemsState.Active;
                 }
-                SortItems[_quickI].IsActive = true;
-                SortItems[j].IsActive = true;
                 await Task.Delay(_delayTime);
             }
 
-            var temp = SortItems[_quickI + 1].Height;
-            SortItems[_quickI + 1].Height = SortItems[high].Height;
+            ResetColors();
+            var temp = SortItems[i + 1].Height;
+            SortItems[i + 1].Height = SortItems[high].Height;
             SortItems[high].Height = temp;
-            var temp1 = SortItems[_quickI + 1].Value;
-            SortItems[_quickI + 1].Value = SortItems[high].Value;
+            var temp1 = SortItems[i + 1].Value;
+            SortItems[i + 1].Value = SortItems[high].Value;
             SortItems[high].Value = temp1;
 
-            SortItems[_quickI + 1].IsActive = true;
-            SortItems[high].IsActive = true;
+            SortItems[i + 1].State = SortItemsState.Active;
+            SortItems[high].State = SortItemsState.Active;
             await Task.Delay(_delayTime);
             ResetColors();
 
-            _quickI++;
+            return i + 1;
         }
 
         private void ResetColors()
         {
             for (int k = 0; k < SortItems.Count; k++)
             {
-                SortItems[k].IsActive = false;
+                SortItems[k].State = SortItemsState.Inactive;
             }
         }
 

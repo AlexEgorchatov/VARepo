@@ -65,7 +65,7 @@
             </Grid>
         </Grid>
 
-        <TabControl Grid.Row="2" ItemsSource="{Binding SortTabs}" FontSize="14" SelectedIndex="{Binding SelectedTab}">
+        <TabControl Grid.Row="2" ItemsSource="{Binding SortTabs}" FontSize="14" SelectedItem="{Binding SelectedTab, Mode=TwoWay}">
             <TabControl.ContentTemplate>
                 <DataTemplate>
                     <Grid Background="Gray">

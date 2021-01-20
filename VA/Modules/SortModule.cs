@@ -1,5 +1,6 @@
 ﻿using System.Windows.Media;
 using VA.Interfaces;
+using VA.Resources;
 using VA.ViewModels;
 
 namespace VA.Modules

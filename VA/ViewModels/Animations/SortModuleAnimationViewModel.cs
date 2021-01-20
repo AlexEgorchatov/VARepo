@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using VA.Interfaces;
+using VA.Resources;
 
 namespace VA.ViewModels
 {
@@ -51,7 +52,7 @@ namespace VA.ViewModels
                                 }
                                 else
                                 {
-                                    AnimationItems.ForEach(i => i.IsActive = false);
+                                    AnimationItems.ForEach(i => i.State = SortItemsState.Inactive);
                                     if (AnimationItems[j].Height > AnimationItems[j + 1].Height)
                                     {
                                         var temp = AnimationItems[j].Height;
@@ -59,8 +60,8 @@ namespace VA.ViewModels
                                         AnimationItems[j + 1].Height = temp;
                                         isSwapped = true;
                                     }
-                                    AnimationItems[j].IsActive = true;
-                                    AnimationItems[j + 1].IsActive = true;
+                                    AnimationItems[j].State = SortItemsState.Active;
+                                    AnimationItems[j + 1].State = SortItemsState.Active;
                                     await Task.Delay(_delayTime);
                                 }
                                 _mutex.ReleaseMutex();
@@ -82,7 +83,7 @@ namespace VA.ViewModels
         {
             get
             {
-                return _stopAnimation ?? (_stopAnimation = new DelegateCommand(async () =>
+                return _stopAnimation ?? (_stopAnimation = new DelegateCommand(() =>
                 {
                     if (_mutex.WaitOne())
                     {
@@ -126,7 +127,7 @@ namespace VA.ViewModels
             {
                 AnimationItems[i].Height = _initialHeights[i];
             }
-            AnimationItems.ForEach(i => i.IsActive = false);
+            AnimationItems.ForEach(i => i.State = SortItemsState.Inactive);
         }
 
         #endregion

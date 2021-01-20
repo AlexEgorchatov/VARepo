@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using VA.Interfaces;
 using VA.Modules;
+using VA.Resources;
 using VA.Views.Pages;
 
 namespace VA.ViewModels
@@ -55,8 +56,6 @@ namespace VA.ViewModels
         }
 
         #endregion
-
-
 
         #region Public Constructors
 
