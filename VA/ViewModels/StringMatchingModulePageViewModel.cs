@@ -7,23 +7,21 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
-using VA.Resources;
+using VA.ViewModels.Animations;
 
 namespace VA.ViewModels
 {
-    public class SortModulePageViewModel : BindableBase
+    public class StringMatchingModulePageViewModel : BindableBase
     {
         #region Private Fields
 
         private Duration _animationDuration;
-        private DelegateCommand _applyCommand;
         private DelegateCommand _backCommand;
         private Dictionary<int, int> _correspondingSliderDelay;
         private int _delayTime;
         private string _input;
         private bool _isAnimationPaused;
         private bool _isAnimationRunning;
-        private bool _isApplied;
         private double _panelWidth;
         private DelegateCommand _pauseCommand;
         private Regex _regularExpression;
@@ -31,7 +29,7 @@ namespace VA.ViewModels
         private DelegateCommand _runCommand;
         private string _selectedTab;
         private int _sliderValue;
-        private ObservableCollection<SortModuleItemViewModel> _sortItems;
+        private ObservableCollection<StringMatchingModuleCharViewModel> _sortItems;
         private TaskCompletionSource<bool> _tcs;
 
         #endregion
@@ -42,19 +40,6 @@ namespace VA.ViewModels
         {
             get { return _animationDuration; }
             set { SetProperty(ref _animationDuration, value); }
-        }
-
-        public DelegateCommand ApplyCommand
-        {
-            get
-            {
-                return _applyCommand ?? (_applyCommand = new DelegateCommand(() =>
-                {
-                    if (Input == null) return;
-                    FillSortItems();
-                    IsApplied = true;
-                }, () => !string.IsNullOrEmpty(Input)));
-            }
         }
 
         public DelegateCommand BackCommand
@@ -83,11 +68,10 @@ namespace VA.ViewModels
                 if (_regularExpression.IsMatch(value) || value.Length == 0)
                 {
                     SetProperty(ref _input, value);
-                    IsAnimationRunning = false;
-                    IsAnimationPaused = false;
-                    if (IsApplied) IsApplied = false;
+                    /*IsAnimationRunning = false;
+                    IsAnimationPaused = false;*/
                 }
-                ApplyCommand.RaiseCanExecuteChanged();
+                //ApplyCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -113,26 +97,6 @@ namespace VA.ViewModels
         {
             get { return _isAnimationRunning; }
             set { SetProperty(ref _isAnimationRunning, value); }
-        }
-
-        public bool IsApplied
-        {
-            get { return _isApplied; }
-            set
-            {
-                SetProperty(ref _isApplied, value);
-                if (!value)
-                {
-                    SortItems.Clear();
-                    //IsAnimationPaused = false;
-                }
-            }
-        }
-
-        public double PanelWidth
-        {
-            get { return _panelWidth; }
-            set { SetProperty(ref _panelWidth, value); }
         }
 
         public DelegateCommand PauseCommand
@@ -164,7 +128,7 @@ namespace VA.ViewModels
                 return _runCommand ?? (_runCommand = new DelegateCommand(async () =>
                 {
                     IsAnimationRunning = true;
-                    switch (SelectedTab)
+                    /*switch (SelectedTab)
                     {
                         case "Bubble Sort":
                             await BubbleSort();
@@ -176,7 +140,7 @@ namespace VA.ViewModels
 
                         default:
                             break;
-                    }
+                    }*/
                     IsAnimationRunning = false;
                 }));
             }
@@ -210,7 +174,7 @@ namespace VA.ViewModels
             }
         }
 
-        public ObservableCollection<SortModuleItemViewModel> SortItems
+        public ObservableCollection<StringMatchingModuleCharViewModel> SortItems
         {
             get { return _sortItems; }
             set { SetProperty(ref _sortItems, value); }
@@ -222,11 +186,11 @@ namespace VA.ViewModels
 
         #region Public Constructors
 
-        public SortModulePageViewModel()
+        public StringMatchingModulePageViewModel()
         {
             _regularExpression = new Regex(@"^[0-9]{1,2}(\s[0-9]{1,2}){0,24}(\s)?$");
-            SortTabs = new List<string>() { "Bubble Sort", "Quick Sort" };
-            SortItems = new ObservableCollection<SortModuleItemViewModel>();
+            SortTabs = new List<string>() { "Naive Algorithm", "Knuth Morris Pratt" };
+            SortItems = new ObservableCollection<StringMatchingModuleCharViewModel>();
             _correspondingSliderDelay = new Dictionary<int, int>()
             {
                 { 1, 5000},
@@ -247,46 +211,9 @@ namespace VA.ViewModels
 
         #region Private Methods
 
-        private async Task BubbleSort()
-        {
-            for (int i = 0; i < SortItems.Count - 1; i++)
-            {
-                bool isSwapped = false;
-                for (int j = 0; j < SortItems.Count - i - 1; j++)
-                {
-                    ResetColors();
-                    if (SortItems[j].Height > SortItems[j + 1].Height)
-                    {
-                        var tempHeight = SortItems[j].Height;
-                        SortItems[j].Height = SortItems[j + 1].Height;
-                        SortItems[j + 1].Height = tempHeight;
-                        var tempValue = SortItems[j].Value;
-                        SortItems[j].Value = SortItems[j + 1].Value;
-                        SortItems[j + 1].Value = tempValue;
-                        isSwapped = true;
-                    }
-                    SortItems[j].State = SortItemsState.Active;
-                    SortItems[j + 1].State = SortItemsState.Active;
-                    await Task.Delay(_delayTime);
-
-                    if (IsAnimationPaused)
-                    {
-                        await _tcs.Task;
-                    }
-                }
-
-                if (!isSwapped)
-                {
-                    break;
-                }
-            }
-
-            ResetColors();
-        }
-
         private void FillSortItems()
         {
-            SortItems.Clear();
+            /*SortItems.Clear();
             string[] numbers = Input.Split(' ');
             for (int i = 0; i < numbers.Length; i++)
             {
@@ -295,76 +222,15 @@ namespace VA.ViewModels
                     SortItems.Add(new SortModuleItemViewModel(30, Convert.ToInt32(numbers[i]) * 3, 270, 15 + 45 * i, Convert.ToInt32(numbers[i])));
                 }
             }
-            PanelWidth = 15 + (45 * numbers.Length);
-        }
-
-        private async Task<int> Partition(int low, int high)
-        {
-            int pivot = SortItems[high].Value;
-            int i = low - 1;
-
-            for (int j = low; j < high; j++)
-            {
-                ResetColors();
-                SortItems[high].State = SortItemsState.Pivot;
-                SortItems[j].State = SortItemsState.Active;
-                if (SortItems[j].Value <= pivot)
-                {
-                    i++;
-                    var tempHeight = SortItems[i].Height;
-                    SortItems[i].Height = SortItems[j].Height;
-                    SortItems[j].Height = tempHeight;
-                    var tempValue = SortItems[i].Value;
-                    SortItems[i].Value = SortItems[j].Value;
-                    SortItems[j].Value = tempValue;
-                    SortItems[i].State = SortItemsState.Active;
-                }
-                await Task.Delay(_delayTime);
-
-                if (IsAnimationPaused)
-                {
-                    await _tcs.Task;
-                }
-            }
-
-            ResetColors();
-            var temp = SortItems[i + 1].Height;
-            SortItems[i + 1].Height = SortItems[high].Height;
-            SortItems[high].Height = temp;
-            var temp1 = SortItems[i + 1].Value;
-            SortItems[i + 1].Value = SortItems[high].Value;
-            SortItems[high].Value = temp1;
-
-            SortItems[i + 1].State = SortItemsState.Active;
-            SortItems[high].State = SortItemsState.Active;
-
-            await Task.Delay(_delayTime);
-            if (IsAnimationPaused)
-            {
-                await _tcs.Task;
-            }
-
-            ResetColors();
-            return i + 1;
-        }
-
-        //Flashsort
-        private async Task QuickSort(int low, int high)
-        {
-            if (low < high)
-            {
-                int pi = await Partition(low, high);
-                await QuickSort(low, pi - 1);
-                await QuickSort(pi + 1, high);
-            }
+            PanelWidth = 15 + (45 * numbers.Length);*/
         }
 
         private void ResetColors()
         {
-            for (int k = 0; k < SortItems.Count; k++)
+            /*for (int k = 0; k < SortItems.Count; k++)
             {
                 SortItems[k].State = SortItemsState.Inactive;
-            }
+            }*/
         }
 
         #endregion
