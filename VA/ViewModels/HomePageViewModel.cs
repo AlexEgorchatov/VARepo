@@ -44,7 +44,7 @@ namespace VA.ViewModels
                             break;
 
                         case ModuleType.StringMatchingModule:
-                            navigationService?.Navigate(new SortModulePage(new SortModulePageViewModel()));
+                            navigationService?.Navigate(new StringMatchingModulePage(new StringMatchingModulePageViewModel()));
                             break;
 
                         case ModuleType.GridPathModule:

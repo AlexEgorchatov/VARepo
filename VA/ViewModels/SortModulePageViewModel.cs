@@ -124,7 +124,6 @@ namespace VA.ViewModels
                 if (!value)
                 {
                     SortItems.Clear();
-                    //IsAnimationPaused = false;
                 }
             }
         }

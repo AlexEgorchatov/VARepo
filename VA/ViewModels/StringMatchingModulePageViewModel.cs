@@ -16,20 +16,23 @@ namespace VA.ViewModels
         #region Private Fields
 
         private Duration _animationDuration;
+        private DelegateCommand _applyCommand;
         private DelegateCommand _backCommand;
         private Dictionary<int, int> _correspondingSliderDelay;
         private int _delayTime;
         private string _input;
         private bool _isAnimationPaused;
         private bool _isAnimationRunning;
-        private double _panelWidth;
+        private bool _isApplied;
+        private string _pattern;
         private DelegateCommand _pauseCommand;
         private Regex _regularExpression;
         private DelegateCommand _resumeCommand;
         private DelegateCommand _runCommand;
         private string _selectedTab;
         private int _sliderValue;
-        private ObservableCollection<StringMatchingModuleCharViewModel> _sortItems;
+        private ObservableCollection<StringMatchingModuleCharViewModel> _stringMatchingInput;
+        private ObservableCollection<StringMatchingModuleCharViewModel> _stringMatchingPattern;
         private TaskCompletionSource<bool> _tcs;
 
         #endregion
@@ -40,6 +43,19 @@ namespace VA.ViewModels
         {
             get { return _animationDuration; }
             set { SetProperty(ref _animationDuration, value); }
+        }
+
+        public DelegateCommand ApplyCommand
+        {
+            get
+            {
+                return _applyCommand ?? (_applyCommand = new DelegateCommand(() =>
+                {
+                    if (Input == null || Pattern == null) return;
+                    FillSortItems();
+                    IsApplied = true;
+                }, () => !string.IsNullOrEmpty(Input) && !string.IsNullOrEmpty(Pattern)));
+            }
         }
 
         public DelegateCommand BackCommand
@@ -68,10 +84,10 @@ namespace VA.ViewModels
                 if (_regularExpression.IsMatch(value) || value.Length == 0)
                 {
                     SetProperty(ref _input, value);
-                    /*IsAnimationRunning = false;
-                    IsAnimationPaused = false;*/
+                    IsAnimationRunning = false;
+                    IsAnimationPaused = false;
                 }
-                //ApplyCommand.RaiseCanExecuteChanged();
+                ApplyCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -97,6 +113,34 @@ namespace VA.ViewModels
         {
             get { return _isAnimationRunning; }
             set { SetProperty(ref _isAnimationRunning, value); }
+        }
+
+        public bool IsApplied
+        {
+            get { return _isApplied; }
+            set
+            {
+                SetProperty(ref _isApplied, value);
+                if (!value)
+                {
+                    StringMatchingInput.Clear();
+                }
+            }
+        }
+
+        public string Pattern
+        {
+            get { return _pattern; }
+            set
+            {
+                if (_regularExpression.IsMatch(value) || value.Length == 0)
+                {
+                    SetProperty(ref _pattern, value);
+                    IsAnimationRunning = false;
+                    IsAnimationPaused = false;
+                }
+                ApplyCommand.RaiseCanExecuteChanged();
+            }
         }
 
         public DelegateCommand PauseCommand
@@ -128,6 +172,7 @@ namespace VA.ViewModels
                 return _runCommand ?? (_runCommand = new DelegateCommand(async () =>
                 {
                     IsAnimationRunning = true;
+                    await Task.Delay(_delayTime);
                     /*switch (SelectedTab)
                     {
                         case "Bubble Sort":
@@ -174,13 +219,19 @@ namespace VA.ViewModels
             }
         }
 
-        public ObservableCollection<StringMatchingModuleCharViewModel> SortItems
+        public ObservableCollection<StringMatchingModuleCharViewModel> StringMatchingInput
         {
-            get { return _sortItems; }
-            set { SetProperty(ref _sortItems, value); }
+            get { return _stringMatchingInput; }
+            set { SetProperty(ref _stringMatchingInput, value); }
         }
 
-        public List<string> SortTabs { get; set; }
+        public ObservableCollection<StringMatchingModuleCharViewModel> StringMatchingPattern
+        {
+            get { return _stringMatchingPattern; }
+            set { SetProperty(ref _stringMatchingPattern, value); }
+        }
+
+        public List<string> StringMatchingTabs { get; set; }
 
         #endregion
 
@@ -188,9 +239,10 @@ namespace VA.ViewModels
 
         public StringMatchingModulePageViewModel()
         {
-            _regularExpression = new Regex(@"^[0-9]{1,2}(\s[0-9]{1,2}){0,24}(\s)?$");
-            SortTabs = new List<string>() { "Naive Algorithm", "Knuth Morris Pratt" };
-            SortItems = new ObservableCollection<StringMatchingModuleCharViewModel>();
+            _regularExpression = new Regex(@"^[a-z]+(\s[a-z]+)*(\s)?$");
+            StringMatchingTabs = new List<string>() { "Naive Algorithm", "Knuth Morris Pratt" };
+            StringMatchingInput = new ObservableCollection<StringMatchingModuleCharViewModel>();
+            StringMatchingPattern = new ObservableCollection<StringMatchingModuleCharViewModel>();
             _correspondingSliderDelay = new Dictionary<int, int>()
             {
                 { 1, 5000},
@@ -213,16 +265,18 @@ namespace VA.ViewModels
 
         private void FillSortItems()
         {
-            /*SortItems.Clear();
-            string[] numbers = Input.Split(' ');
-            for (int i = 0; i < numbers.Length; i++)
+            StringMatchingInput.Clear();
+            StringMatchingPattern.Clear();
+
+            for (int i = 0; i < Input.Length; i++)
             {
-                if (numbers[i] != "")
-                {
-                    SortItems.Add(new SortModuleItemViewModel(30, Convert.ToInt32(numbers[i]) * 3, 270, 15 + 45 * i, Convert.ToInt32(numbers[i])));
-                }
+                StringMatchingInput.Add(new StringMatchingModuleCharViewModel(Input[i]));
             }
-            PanelWidth = 15 + (45 * numbers.Length);*/
+
+            for (int i = 0; i < Pattern.Length; i++)
+            {
+                StringMatchingPattern.Add(new StringMatchingModuleCharViewModel(Pattern[i]));
+            }
         }
 
         private void ResetColors()
