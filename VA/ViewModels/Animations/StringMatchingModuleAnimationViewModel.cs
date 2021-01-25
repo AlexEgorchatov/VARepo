@@ -17,6 +17,7 @@ namespace VA.ViewModels.Animations
         private List<StringMatchingModuleCharViewModel> _input;
         private bool _isCanceled;
         private bool _isFirstMatch;
+        private List<StringMatchingModuleCharViewModel> _pattern;
         private string _result;
         private DelegateCommand _startAnimation;
         private DelegateCommand _stopAnimation;
@@ -25,7 +26,7 @@ namespace VA.ViewModels.Animations
 
         #region Private Properties
 
-        private List<int> _activeItems { get; set; }
+        //private List<int> _activeInputItems { get; set; }
 
         #endregion
 
@@ -37,7 +38,11 @@ namespace VA.ViewModels.Animations
             set { SetProperty(ref _input, value); }
         }
 
-        public string Pattern { get; private set; }
+        public List<StringMatchingModuleCharViewModel> Pattern
+        {
+            get { return _pattern; }
+            set { SetProperty(ref _pattern, value); }
+        }
 
         public string Result
         {
@@ -53,9 +58,9 @@ namespace VA.ViewModels.Animations
                 {
                     _isCanceled = false;
 
-                    for (int i = 0; i <= Input.Count - Pattern.Length; i++)
+                    for (int i = 0; i <= Input.Count - Pattern.Count; i++)
                     {
-                        for (int j = 0; j < Pattern.Length; j++)
+                        for (int j = 0; j < Pattern.Count; j++)
                         {
                             if (_mutex.WaitOne())
                             {
@@ -72,14 +77,15 @@ namespace VA.ViewModels.Animations
                                     }
 
                                     Input[i + j].IsActive = true;
-                                    _activeItems.Add(i + j);
-                                    if (Input[i + j].Character != Pattern[j])
+                                    Pattern[j].IsActive = true;
+                                    //_activeInputItems.Add(i + j);
+                                    if (Input[i + j].Character != Pattern[j].Character)
                                     {
                                         await Task.Delay(_delayTime);
                                         break;
                                     }
 
-                                    if (j == Pattern.Length - 1)
+                                    if (j == Pattern.Count - 1)
                                     {
                                         if (_isFirstMatch)
                                         {
@@ -97,7 +103,7 @@ namespace VA.ViewModels.Animations
                                 _mutex.ReleaseMutex();
                             }
                         }
-                        if (i == (Input.Count - Pattern.Length))
+                        if (i == (Input.Count - Pattern.Count))
                         {
                             i = -1;
                             ResetModuleAnimation();
@@ -132,8 +138,9 @@ namespace VA.ViewModels.Animations
             _mutex = new Mutex();
             var input = "eeaea";
             Input = new List<StringMatchingModuleCharViewModel>(input.Select(i => new StringMatchingModuleCharViewModel(i)));
-            _activeItems = new List<int>();
-            Pattern = "ae";
+            var pattern = "ae";
+            Pattern = new List<StringMatchingModuleCharViewModel>(pattern.Select(i => new StringMatchingModuleCharViewModel(i)));
+            //_activeInputItems = new List<int>();
             _isFirstMatch = true;
         }
 
@@ -143,11 +150,13 @@ namespace VA.ViewModels.Animations
 
         private void ResetActiveItems()
         {
-            for (int i = 0; i < _activeItems.Count; i++)
+            /*for (int i = 0; i < _activeInputItems.Count; i++)
             {
-                Input[_activeItems[i]].IsActive = false;
-            }
-            _activeItems.Clear();
+                Input[_activeInputItems[i]].IsActive = false;
+            }*/
+            Input.ForEach(i => i.IsActive = false);
+            Pattern.ForEach(i => i.IsActive = false);
+            //_activeInputItems.Clear();
         }
 
         private void ResetModuleAnimation()

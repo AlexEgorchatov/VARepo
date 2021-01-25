@@ -63,7 +63,7 @@
                     </Button>
                 </Grid>
 
-                <TextBlock Grid.Row="1" Text="Ex: &quot;this is input string&quot;. Lower case only. Maximum number of elements is 25" Foreground="LightGray" Margin="90,10,0,0"/>
+                <TextBlock Grid.Row="1" Text="Ex: &quot;this is input string&quot;. Lower case only. Maximum number of elements is 70" Foreground="LightGray" Margin="90,10,0,0"/>
             </Grid>
 
             <Grid Grid.Row="1" VerticalAlignment="Center">
@@ -126,7 +126,7 @@
                         </Grid>
 
                         <Grid Grid.Row="2" Margin="20">
-                            <TextBlock Text="Result: " FontSize="36" VerticalAlignment="Center"/>
+                            <TextBlock Text="Result: " FontSize="36" VerticalAlignment="Center" Visibility="{Binding IsApplied, Converter={StaticResource GenericBooleanConverter}}"/>
                         </Grid>
 
                         <Grid Grid.Row="3">

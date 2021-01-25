@@ -91,7 +91,18 @@
                     </StackPanel>
                     <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
                         <TextBlock Text="Pattern: " FontSize="36" Foreground="White"/>
-                        <TextBlock Text="{Binding Pattern}" FontSize="36" Foreground="White"/>
+                        <ItemsControl ItemsSource="{Binding Pattern}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Character}" Foreground="{Binding ForegroundBrush}" FontSize="36"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
                     </StackPanel>
                     <StackPanel Grid.Row="2" Orientation="Horizontal"  VerticalAlignment="Center">
                         <TextBlock Text="Found at: " FontSize="36" Foreground="White"/>

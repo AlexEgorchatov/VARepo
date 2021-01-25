@@ -81,7 +81,7 @@ namespace VA.ViewModels
             get { return _input; }
             set
             {
-                if (_regularExpression.IsMatch(value) || value.Length == 0)
+                if ((_regularExpression.IsMatch(value) || value.Length == 0) && value.Length <= 70)
                 {
                     SetProperty(ref _input, value);
                     IsAnimationRunning = false;
@@ -133,7 +133,7 @@ namespace VA.ViewModels
             get { return _pattern; }
             set
             {
-                if (_regularExpression.IsMatch(value) || value.Length == 0)
+                if ((_regularExpression.IsMatch(value) || value.Length == 0) && value.Length <= 70)
                 {
                     SetProperty(ref _pattern, value);
                     IsAnimationRunning = false;
