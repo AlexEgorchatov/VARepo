@@ -15,7 +15,6 @@ namespace VA.ViewModels
     {
         #region Private Fields
 
-        private Duration _animationDuration;
         private DelegateCommand _applyCommand;
         private DelegateCommand _backCommand;
         private Dictionary<int, int> _correspondingSliderDelay;
@@ -27,6 +26,7 @@ namespace VA.ViewModels
         private string _pattern;
         private DelegateCommand _pauseCommand;
         private Regex _regularExpression;
+        private string _result;
         private DelegateCommand _resumeCommand;
         private DelegateCommand _runCommand;
         private string _selectedTab;
@@ -38,12 +38,6 @@ namespace VA.ViewModels
         #endregion
 
         #region Public Properties
-
-        public Duration AnimationDuration
-        {
-            get { return _animationDuration; }
-            set { SetProperty(ref _animationDuration, value); }
-        }
 
         public DelegateCommand ApplyCommand
         {
@@ -86,6 +80,7 @@ namespace VA.ViewModels
                     SetProperty(ref _input, value);
                     IsAnimationRunning = false;
                     IsAnimationPaused = false;
+                    if (IsApplied) IsApplied = false;
                 }
                 ApplyCommand.RaiseCanExecuteChanged();
             }
@@ -124,6 +119,7 @@ namespace VA.ViewModels
                 if (!value)
                 {
                     StringMatchingInput.Clear();
+                    StringMatchingPattern.Clear();
                 }
             }
         }
@@ -138,6 +134,7 @@ namespace VA.ViewModels
                     SetProperty(ref _pattern, value);
                     IsAnimationRunning = false;
                     IsAnimationPaused = false;
+                    if (IsApplied) IsApplied = false;
                 }
                 ApplyCommand.RaiseCanExecuteChanged();
             }
@@ -152,6 +149,12 @@ namespace VA.ViewModels
                     IsAnimationPaused = true;
                 }));
             }
+        }
+
+        public string Result
+        {
+            get { return _result; }
+            set { SetProperty(ref _result, value); }
         }
 
         public DelegateCommand ResumeCommand
@@ -172,20 +175,19 @@ namespace VA.ViewModels
                 return _runCommand ?? (_runCommand = new DelegateCommand(async () =>
                 {
                     IsAnimationRunning = true;
-                    await Task.Delay(_delayTime);
-                    /*switch (SelectedTab)
+                    switch (SelectedTab)
                     {
-                        case "Bubble Sort":
-                            await BubbleSort();
+                        case "Naive Algorithm":
+                            await NaiveAlgorithm();
                             break;
 
-                        case "Quick Sort":
-                            await QuickSort(0, SortItems.Count - 1);
+                        case "Knuth Morris Pratt":
+                            //await KnuthMorrisPrattAlgorithm();
                             break;
 
                         default:
                             break;
-                    }*/
+                    }
                     IsAnimationRunning = false;
                 }));
             }
@@ -208,14 +210,6 @@ namespace VA.ViewModels
             {
                 SetProperty(ref _sliderValue, value);
                 _delayTime = _correspondingSliderDelay[value];
-                if (_delayTime < 400)
-                {
-                    AnimationDuration = new Duration(TimeSpan.FromMilliseconds(_delayTime));
-                }
-                else
-                {
-                    AnimationDuration = new Duration(TimeSpan.FromMilliseconds(400));
-                }
             }
         }
 
@@ -239,7 +233,7 @@ namespace VA.ViewModels
 
         public StringMatchingModulePageViewModel()
         {
-            _regularExpression = new Regex(@"^[a-z]+(\s[a-z]+)*(\s)?$");
+            _regularExpression = new Regex(@"^[a-z]*(\s[a-z]+)*(\s)?$");
             StringMatchingTabs = new List<string>() { "Naive Algorithm", "Knuth Morris Pratt" };
             StringMatchingInput = new ObservableCollection<StringMatchingModuleCharViewModel>();
             StringMatchingPattern = new ObservableCollection<StringMatchingModuleCharViewModel>();
@@ -256,7 +250,6 @@ namespace VA.ViewModels
                 { 9, 200},
             };
             SliderValue = 5;
-            AnimationDuration = new Duration(TimeSpan.FromMilliseconds(400));
         }
 
         #endregion
@@ -279,12 +272,61 @@ namespace VA.ViewModels
             }
         }
 
+        private async Task KnuthMorrisPrattAlgorithm()
+        {
+        }
+
+        private async Task NaiveAlgorithm()
+        {
+            int patternLength = StringMatchingPattern.Count;
+            int inputLength = StringMatchingInput.Count;
+            bool isFirstMatch = true;
+
+            for (int i = 0; i <= inputLength - patternLength; i++)
+            {
+                for (int j = 0; j < patternLength; j++)
+                {
+                    if(j == 0)
+                    {
+                        ResetColors();
+                    }
+
+                    StringMatchingInput[i + j].IsActive = true;
+                    StringMatchingPattern[j].IsActive = true;
+
+                    if (StringMatchingInput[i + j].Character != StringMatchingPattern[j].Character)
+                    {
+                        await Task.Delay(_delayTime);
+                        break;
+                    }
+
+                    if (j == patternLength - 1)
+                    {
+                        if (isFirstMatch)
+                        {
+                            Result += i;
+                            isFirstMatch = false;
+                        }
+                        else
+                        {
+                            Result = Result + ", " + i;
+                        }
+                    }
+                    await Task.Delay(_delayTime);
+                }
+            }
+        }
+
         private void ResetColors()
         {
-            /*for (int k = 0; k < SortItems.Count; k++)
+            for (int i = 0; i < StringMatchingInput.Count; i++)
             {
-                SortItems[k].State = SortItemsState.Inactive;
-            }*/
+                StringMatchingInput[i].IsActive = false;
+            }
+            for (int i = 0; i < StringMatchingPattern.Count; i++)
+            {
+                StringMatchingPattern[i].IsActive = false;
+            }
         }
 
         #endregion
