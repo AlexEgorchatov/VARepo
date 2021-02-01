@@ -55,7 +55,7 @@
 
                     <TextBlock Grid.Column="0" Text="Input" Foreground="#F5C81A" FontSize="24" VerticalAlignment="Center"/>
                     <TextBox Grid.Column="1" Height="30" Text="{Binding Input, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" FontFamily="{DynamicResource MainFont}" FontSize="14" VerticalContentAlignment="Center" Padding="5,0" Margin="0,0,10,0"/>
-                    <Button Grid.Column="2" HorizontalAlignment="Center" Height="30" Command="{Binding ApplyCommand}" VerticalAlignment="Top" IsEnabled="{Binding IsAnimationRunning, Converter={StaticResource GenericBooleanConverter}, ConverterParameter=Inverse}">
+                    <Button Grid.Column="2" Width="95" HorizontalAlignment="Center" Height="30" Command="{Binding ApplyCommand}" VerticalAlignment="Top" IsEnabled="{Binding IsAnimationRunning, Converter={StaticResource GenericBooleanConverter}, ConverterParameter=Inverse}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="&#xE10B;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="10,0" FontSize="14"/>
                             <TextBlock Text="Apply" Margin="10,0" FontSize="14"/>
@@ -70,7 +70,7 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="90"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="88"/>
+                    <ColumnDefinition Width="95"/>
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column="0" Text="Pattern" Foreground="#F5C81A" FontSize="24" VerticalAlignment="Center"/>
