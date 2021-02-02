@@ -18,7 +18,7 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50"/>
+            <RowDefinition Height="55"/>
             <RowDefinition Height="110"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
@@ -50,13 +50,13 @@
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
-                <Button Grid.Row="0" HorizontalAlignment="Center" Height="30" Margin="0,10,0,5" Command="{Binding ApplyCommand}" VerticalAlignment="Top" IsEnabled="{Binding IsAnimationRunning, Converter={StaticResource GenericBooleanConverter}, ConverterParameter=Inverse}">
+                <Button Grid.Row="0" HorizontalAlignment="Center" Height="30" Margin="0,10,0,5" Command="{Binding ApplyCommand}" VerticalAlignment="Top">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE10B;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="10,0" FontSize="14"/>
                         <TextBlock Text="Apply" Margin="10,0" FontSize="14"/>
                     </StackPanel>
                 </Button>
-                <Button Grid.Row="1" Height="30" Command="{Binding RunCommand}" Visibility="{Binding IsApplied, Converter={StaticResource GenericBooleanConverter}, FallbackValue=Collapsed}" VerticalAlignment="Bottom" IsEnabled="{Binding IsAnimationRunning,Converter={StaticResource GenericBooleanConverter}, ConverterParameter=Inverse}">
+                <Button Grid.Row="1" Height="30" Command="{Binding RunCommand}" VerticalAlignment="Bottom" IsEnabled="{Binding IsRunEnabled, Converter={StaticResource GenericBooleanConverter}}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE102;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="10,0" FontSize="14"/>
                         <TextBlock Text="Run" Margin="13,0" FontSize="14"/>
@@ -65,7 +65,7 @@
             </Grid>
         </Grid>
 
-        <TabControl Grid.Row="2" ItemsSource="{Binding SortTabs}" FontSize="14" SelectedItem="{Binding SelectedTab, Mode=TwoWay}">
+        <!--<TabControl Grid.Row="2" ItemsSource="{Binding SortTabs}" FontSize="14" SelectedItem="{Binding SelectedTab, Mode=TwoWay}">
             <TabControl.ContentTemplate>
                 <DataTemplate>
                     <Grid Background="Gray">
@@ -128,14 +128,14 @@
                             <TextBlock Text="Slower" VerticalAlignment="Center" Margin="10,0,0,0"/>
                             <Slider Grid.Row="1" Value="{Binding SliderValue}" TickPlacement="BottomRight" Minimum="1" Maximum="9" TickFrequency="1" IsSnapToTickEnabled="True" VerticalAlignment="Top" HorizontalAlignment="Left" Width="300" Margin="10"/>
                             <TextBlock Text="Faster" VerticalAlignment="Center" Margin="0,0,20,0"/>
-                            <Button Height="30" Width="90" Command="{Binding PauseCommand}" VerticalAlignment="Center" IsEnabled="{Binding IsAnimationRunning}"
+                            <Button Height="30" Width="90" Command="{Binding PauseCommand}" VerticalAlignment="Center" IsEnabled="{Binding IsRunEnabled}"
                                     Visibility="{Binding IsAnimationPaused, Converter={StaticResource GenericBooleanConverter}, ConverterParameter=Reverse}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="&#xE103;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="5,0" FontSize="16" FontWeight="ExtraBold"/>
                                     <TextBlock Text="Stop" Margin="5,0" FontSize="14"/>
                                 </StackPanel>
                             </Button>
-                            <Button Height="30" Width="90" Command="{Binding ResumeCommand}" VerticalAlignment="Center" IsEnabled="{Binding IsAnimationRunning}"
+                            <Button Height="30" Width="90" Command="{Binding ResumeCommand}" VerticalAlignment="Center" IsEnabled="{Binding IsRunEnabled}"
                                     Visibility="{Binding IsAnimationPaused, Converter={StaticResource GenericBooleanConverter}, FallbackValue=Collapsed}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="&#xE102;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="5,0" FontSize="16" FontWeight="ExtraBold"/>
@@ -143,6 +143,79 @@
                                 </StackPanel>
                             </Button>
                         </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>-->
+
+        <TabControl Grid.Row="2" ItemsSource="{Binding SortTabs}" FontSize="14" SelectedItem="{Binding SelectedTab, Mode=TwoWay}">
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <Grid Background="Gray" DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Page}}, Path=DataContext}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="115"/>
+                            <RowDefinition Height="85"/>
+                            <RowDefinition Height="auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="20,50,20,20">
+                            <ItemsControl ItemsSource="{Binding StringMatchingInput}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Character}" Foreground="{Binding ForegroundBrush}" FontSize="36"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+
+                        <Grid Grid.Row="1" Margin="20">
+                            <ItemsControl ItemsSource="{Binding StringMatchingPattern}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Character}" Foreground="{Binding ForegroundBrush}" FontSize="36"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+
+                        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="20" Visibility="{Binding IsApplied, Converter={StaticResource GenericBooleanConverter}}">
+                            <TextBlock Text="Result: " FontSize="36" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Result}" FontSize="36" VerticalAlignment="Center"/>
+                        </StackPanel>
+
+                        <Grid Grid.Row="3">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom"
+                                    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Page}}, Path=DataContext}">
+                                <TextBlock Text="Slower" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                <Slider Grid.Row="1" Value="{Binding SliderValue}" TickPlacement="BottomRight" Minimum="1" Maximum="9" TickFrequency="1" IsSnapToTickEnabled="True" VerticalAlignment="Top" HorizontalAlignment="Left" Width="300" Margin="10"/>
+                                <TextBlock Text="Faster" VerticalAlignment="Center" Margin="0,0,20,0"/>
+                                <Button Height="30" Width="90" Command="{Binding PauseCommand}" VerticalAlignment="Center" IsEnabled="{Binding IsAnimationRunning}"
+                                    Visibility="{Binding IsAnimationPaused, Converter={StaticResource GenericBooleanConverter}, ConverterParameter=Reverse}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE103;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="5,0" FontSize="16" FontWeight="ExtraBold"/>
+                                        <TextBlock Text="Stop" Margin="5,0" FontSize="14"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Height="30" Width="90" Command="{Binding ResumeCommand}" VerticalAlignment="Center" IsEnabled="{Binding IsAnimationRunning}"
+                                    Visibility="{Binding IsAnimationPaused, Converter={StaticResource GenericBooleanConverter}, FallbackValue=Collapsed}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="&#xE102;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="5,0" FontSize="16" FontWeight="ExtraBold"/>
+                                        <TextBlock Text="Resume" Margin="5,0" FontSize="14"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
                     </Grid>
                 </DataTemplate>
             </TabControl.ContentTemplate>

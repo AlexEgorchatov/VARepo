@@ -22,8 +22,8 @@ namespace VA.ViewModels
         private int _delayTime;
         private string _input;
         private bool _isAnimationPaused;
-        private bool _isAnimationRunning;
-        private bool _isApplied;
+        private bool _isRunEnabled;
+        //private bool _isApplied;
         private double _panelWidth;
         private DelegateCommand _pauseCommand;
         private Regex _regularExpression;
@@ -50,9 +50,9 @@ namespace VA.ViewModels
             {
                 return _applyCommand ?? (_applyCommand = new DelegateCommand(() =>
                 {
-                    if (Input == null) return;
                     FillSortItems();
-                    IsApplied = true;
+                    IsRunEnabled = true;
+                    //IsApplied = true;
                 }, () => !string.IsNullOrEmpty(Input)));
             }
         }
@@ -83,9 +83,9 @@ namespace VA.ViewModels
                 if (_regularExpression.IsMatch(value) || value.Length == 0)
                 {
                     SetProperty(ref _input, value);
-                    IsAnimationRunning = false;
-                    IsAnimationPaused = false;
-                    if (IsApplied) IsApplied = false;
+                    /*IsAnimationRunning = false;
+                    IsAnimationPaused = false;*/
+                    //if (IsApplied) IsApplied = false;
                 }
                 ApplyCommand.RaiseCanExecuteChanged();
             }
@@ -109,24 +109,24 @@ namespace VA.ViewModels
             }
         }
 
-        public bool IsAnimationRunning
+        public bool IsRunEnabled
         {
-            get { return _isAnimationRunning; }
-            set { SetProperty(ref _isAnimationRunning, value); }
+            get { return _isRunEnabled; }
+            set { SetProperty(ref _isRunEnabled, value); }
         }
 
-        public bool IsApplied
-        {
-            get { return _isApplied; }
-            set
-            {
-                SetProperty(ref _isApplied, value);
-                if (!value)
-                {
-                    SortItems.Clear();
-                }
-            }
-        }
+        //public bool IsApplied
+        //{
+        //    get { return _isApplied; }
+        //    set
+        //    {
+        //        SetProperty(ref _isApplied, value);
+        //        if (!value)
+        //        {
+        //            SortItems.Clear();
+        //        }
+        //    }
+        //}
 
         public double PanelWidth
         {
@@ -162,7 +162,7 @@ namespace VA.ViewModels
             {
                 return _runCommand ?? (_runCommand = new DelegateCommand(async () =>
                 {
-                    IsAnimationRunning = true;
+                    IsRunEnabled = false;
                     switch (SelectedTab)
                     {
                         case "Bubble Sort":
@@ -176,7 +176,7 @@ namespace VA.ViewModels
                         default:
                             break;
                     }
-                    IsAnimationRunning = false;
+                    IsRunEnabled = true;
                 }));
             }
         }
@@ -186,7 +186,7 @@ namespace VA.ViewModels
             get { return _selectedTab; }
             set
             {
-                if (IsAnimationRunning) return;
+                if (!IsRunEnabled) return;
                 SetProperty(ref _selectedTab, value);
             }
         }

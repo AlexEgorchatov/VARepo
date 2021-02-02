@@ -78,8 +78,8 @@ namespace VA.ViewModels
                 if ((_regularExpression.IsMatch(value) || value.Length == 0) && value.Length <= 70)
                 {
                     SetProperty(ref _input, value);
-                    IsAnimationRunning = false;
-                    IsAnimationPaused = false;
+                    /*IsAnimationRunning = false;
+                    IsAnimationPaused = false;*/
                     if (IsApplied) IsApplied = false;
                 }
                 ApplyCommand.RaiseCanExecuteChanged();
