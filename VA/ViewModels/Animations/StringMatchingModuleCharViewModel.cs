@@ -46,5 +46,10 @@ namespace VA.ViewModels.Animations
         }
 
         #endregion
+
+        public override string ToString()
+        {
+            return $"{Character}";
+        }
     }
 }

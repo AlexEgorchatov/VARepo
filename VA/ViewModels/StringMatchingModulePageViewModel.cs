@@ -45,8 +45,8 @@ namespace VA.ViewModels
             {
                 return _applyCommand ?? (_applyCommand = new DelegateCommand(() =>
                 {
-                    if (Input == null || Pattern == null) return;
                     FillSortItems();
+                    Result = "";
                     IsApplied = true;
                 }, () => !string.IsNullOrEmpty(Input) && !string.IsNullOrEmpty(Pattern)));
             }
@@ -80,6 +80,7 @@ namespace VA.ViewModels
                     SetProperty(ref _input, value);
                     IsAnimationRunning = false;
                     IsAnimationPaused = false;
+                    Result = "";
                     if (IsApplied) IsApplied = false;
                 }
                 ApplyCommand.RaiseCanExecuteChanged();
@@ -134,6 +135,7 @@ namespace VA.ViewModels
                     SetProperty(ref _pattern, value);
                     IsAnimationRunning = false;
                     IsAnimationPaused = false;
+                    Result = "";
                     if (IsApplied) IsApplied = false;
                 }
                 ApplyCommand.RaiseCanExecuteChanged();
@@ -175,6 +177,7 @@ namespace VA.ViewModels
                 return _runCommand ?? (_runCommand = new DelegateCommand(async () =>
                 {
                     IsAnimationRunning = true;
+                    Result = "";
                     switch (SelectedTab)
                     {
                         case "Naive Algorithm":
@@ -233,7 +236,7 @@ namespace VA.ViewModels
 
         public StringMatchingModulePageViewModel()
         {
-            _regularExpression = new Regex(@"^[a-z]*(\s[a-z]+)*(\s)?$");
+            _regularExpression = new Regex(@"^[a-z]+(\s[a-z]+)*(\s)?$");
             StringMatchingTabs = new List<string>() { "Naive Algorithm", "Knuth Morris Pratt" };
             StringMatchingInput = new ObservableCollection<StringMatchingModuleCharViewModel>();
             StringMatchingPattern = new ObservableCollection<StringMatchingModuleCharViewModel>();
@@ -278,29 +281,33 @@ namespace VA.ViewModels
 
         private async Task NaiveAlgorithm()
         {
-            int patternLength = StringMatchingPattern.Count;
-            int inputLength = StringMatchingInput.Count;
             bool isFirstMatch = true;
 
-            for (int i = 0; i <= inputLength - patternLength; i++)
+            for (int i = 0; i <= StringMatchingInput.Count - StringMatchingPattern.Count; i++)
             {
-                for (int j = 0; j < patternLength; j++)
+                for (int j = 0; j < StringMatchingPattern.Count; j++)
                 {
                     if(j == 0)
                     {
                         ResetColors();
                     }
 
+                    if (StringMatchingInput[i + j].Character == ' ') StringMatchingInput[i + j].Character = 'a';
+                    if (StringMatchingPattern[j].Character == ' ') StringMatchingPattern[j].Character = 'a';
                     StringMatchingInput[i + j].IsActive = true;
                     StringMatchingPattern[j].IsActive = true;
 
                     if (StringMatchingInput[i + j].Character != StringMatchingPattern[j].Character)
                     {
                         await Task.Delay(_delayTime);
+                        if (IsAnimationPaused)
+                        {
+                            await _tcs.Task;
+                        }
                         break;
                     }
 
-                    if (j == patternLength - 1)
+                    if (j == StringMatchingPattern.Count - 1)
                     {
                         if (isFirstMatch)
                         {
@@ -312,9 +319,16 @@ namespace VA.ViewModels
                             Result = Result + ", " + i;
                         }
                     }
+
                     await Task.Delay(_delayTime);
+                    if (IsAnimationPaused)
+                    {
+                        await _tcs.Task;
+                    }
                 }
             }
+
+            ResetColors();
         }
 
         private void ResetColors()
