@@ -15,4 +15,9 @@ namespace VA.Resources
     {
         Inactive, Active, Pivot
     }
+
+    public enum StringMatchingItemsState
+    {
+        Inactive, Active, Space
+    }
 }

@@ -63,7 +63,7 @@
                     </Button>
                 </Grid>
 
-                <TextBlock Grid.Row="1" Text="Ex: &quot;this is input string&quot;. Lower case only. Maximum number of elements is 70" Foreground="LightGray" Margin="90,10,0,0"/>
+                <TextBlock Grid.Row="1" Text="Ex: &quot;this is input string&quot;. Lower case only. Maximum number of elements is 80" Foreground="LightGray" Margin="90,10,0,0"/>
             </Grid>
 
             <Grid Grid.Row="1" VerticalAlignment="Center">
@@ -87,9 +87,9 @@
         <TabControl Grid.Row="2" ItemsSource="{Binding StringMatchingTabs}" FontSize="14" SelectedItem="{Binding SelectedTab, Mode=TwoWay}">
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <Grid Background="Gray" DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Page}}, Path=DataContext}">
+                    <Grid Background="#777777" DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Page}}, Path=DataContext}">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="115"/>
+                            <RowDefinition Height="auto"/>
                             <RowDefinition Height="85"/>
                             <RowDefinition Height="auto"/>
                             <RowDefinition Height="*"/>
@@ -99,7 +99,7 @@
                             <ItemsControl ItemsSource="{Binding StringMatchingInput}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
-                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center"/>
+                                        <WrapPanel Orientation="Horizontal" VerticalAlignment="Center"/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>

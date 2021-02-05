@@ -1,12 +1,12 @@
 ﻿using Prism.Commands;
 using Prism.Mvvm;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
+using VA.Resources;
 using VA.ViewModels.Animations;
 
 namespace VA.ViewModels
@@ -15,6 +15,7 @@ namespace VA.ViewModels
     {
         #region Private Fields
 
+        private const int _maxElements = 80;
         private DelegateCommand _applyCommand;
         private DelegateCommand _backCommand;
         private Dictionary<int, int> _correspondingSliderDelay;
@@ -58,6 +59,7 @@ namespace VA.ViewModels
             {
                 return _backCommand ?? (_backCommand = new DelegateCommand(() =>
                 {
+                    ResetAnimation();
                     var navigationService = Application.Current.Properties["NavigationService"] as NavigationService;
                     navigationService?.GoBack();
                 }));
@@ -75,13 +77,10 @@ namespace VA.ViewModels
             get { return _input; }
             set
             {
-                if ((_regularExpression.IsMatch(value) || value.Length == 0) && value.Length <= 70)
+                if ((_regularExpression.IsMatch(value) || value.Length == 0) && value.Length <= _maxElements)
                 {
                     SetProperty(ref _input, value);
-                    IsAnimationRunning = false;
-                    IsAnimationPaused = false;
-                    Result = "";
-                    if (IsApplied) IsApplied = false;
+                    ResetAnimation();
                 }
                 ApplyCommand.RaiseCanExecuteChanged();
             }
@@ -130,13 +129,10 @@ namespace VA.ViewModels
             get { return _pattern; }
             set
             {
-                if ((_regularExpression.IsMatch(value) || value.Length == 0) && value.Length <= 70)
+                if ((_regularExpression.IsMatch(value) || value.Length == 0) && value.Length <= _maxElements)
                 {
                     SetProperty(ref _pattern, value);
-                    IsAnimationRunning = false;
-                    IsAnimationPaused = false;
-                    Result = "";
-                    if (IsApplied) IsApplied = false;
+                    ResetAnimation();
                 }
                 ApplyCommand.RaiseCanExecuteChanged();
             }
@@ -185,12 +181,13 @@ namespace VA.ViewModels
                             break;
 
                         case "Knuth Morris Pratt":
-                            //await KnuthMorrisPrattAlgorithm();
+                            await KnuthMorrisPrattAlgorithm();
                             break;
 
                         default:
                             break;
                     }
+                    if (Result == "") Result = "No match is found";
                     IsAnimationRunning = false;
                 }));
             }
@@ -266,17 +263,126 @@ namespace VA.ViewModels
 
             for (int i = 0; i < Input.Length; i++)
             {
-                StringMatchingInput.Add(new StringMatchingModuleCharViewModel(Input[i]));
+                if (Input[i] == ' ')
+                {
+                    StringMatchingInput.Add(new StringMatchingModuleCharViewModel('_') { State = StringMatchingItemsState.Space });
+                }
+                else
+                {
+                    StringMatchingInput.Add(new StringMatchingModuleCharViewModel(Input[i]));
+                }
             }
 
             for (int i = 0; i < Pattern.Length; i++)
             {
-                StringMatchingPattern.Add(new StringMatchingModuleCharViewModel(Pattern[i]));
+                if (Pattern[i] == ' ')
+                {
+                    StringMatchingPattern.Add(new StringMatchingModuleCharViewModel('_') { State = StringMatchingItemsState.Space });
+                }
+                else
+                {
+                    StringMatchingPattern.Add(new StringMatchingModuleCharViewModel(Pattern[i]));
+                }
             }
         }
 
+        //hslssdfsdsksfdsdss
         private async Task KnuthMorrisPrattAlgorithm()
         {
+            int[] lps = new int[StringMatchingPattern.Count];
+            int j = 0, i = 0;
+            bool isResultFound = false, isMatch = false, isFirstMatch = true;
+
+            LongerProperPrefixSuffix(lps);
+
+            while (i < StringMatchingInput.Count)
+            {
+                StringMatchingInput[i].State = StringMatchingItemsState.Active;
+                StringMatchingPattern[j].State = StringMatchingItemsState.Active;
+                if (StringMatchingPattern[j].Character == StringMatchingInput[i].Character)
+                {
+                    j++;
+                    i++;
+                    isMatch = true;
+                }
+
+                if (j == StringMatchingPattern.Count)
+                {
+                    if (isFirstMatch)
+                    {
+                        Result = (i - j).ToString();
+                        isFirstMatch = false;
+                    }
+                    else
+                    {
+                        Result = Result + ", " + (i - j).ToString();
+                    }
+
+                    j = lps[j - 1];
+                    isResultFound = true;
+                }
+                await Task.Delay(_delayTime);
+                await PauseAnimationIfRequired();
+
+                if (isResultFound)
+                {
+                    ResetColors();
+                }
+
+                if (i < StringMatchingInput.Count && StringMatchingPattern[j].Character != StringMatchingInput[i].Character && !isResultFound)
+                {
+                    if (isMatch)
+                    {
+                        StringMatchingInput[i].State = StringMatchingItemsState.Active;
+                        StringMatchingPattern[j].State = StringMatchingItemsState.Active;
+                        await Task.Delay(_delayTime);
+                        await PauseAnimationIfRequired();
+                    }
+
+                    if (j != 0)
+                    {
+                        j = lps[j - 1];
+                    }
+                    else
+                    {
+                        i++;
+                    }
+                    ResetColors();
+                }
+
+                if (isResultFound) isResultFound = false;
+                if (isMatch) isMatch = false;
+            }
+
+            ResetColors();
+        }
+
+        private void LongerProperPrefixSuffix(int[] lps)
+        {
+            int length = 0, i = 1;
+            lps[0] = 0;
+
+            while (i < StringMatchingPattern.Count)
+            {
+                if (StringMatchingPattern[i].Character == StringMatchingPattern[length].Character)
+                {
+                    length++;
+                    lps[i] = length;
+                    i++;
+                }
+                else
+                {
+                    if (length != 0)
+                    {
+                        length = lps[length - 1];
+                    }
+                    else
+                    {
+                        lps[i] = length;
+                        i++;
+                    }
+                }
+            }
         }
 
         private async Task NaiveAlgorithm()
@@ -287,23 +393,18 @@ namespace VA.ViewModels
             {
                 for (int j = 0; j < StringMatchingPattern.Count; j++)
                 {
-                    if(j == 0)
+                    if (j == 0)
                     {
                         ResetColors();
                     }
 
-                    if (StringMatchingInput[i + j].Character == ' ') StringMatchingInput[i + j].Character = 'a';
-                    if (StringMatchingPattern[j].Character == ' ') StringMatchingPattern[j].Character = 'a';
-                    StringMatchingInput[i + j].IsActive = true;
-                    StringMatchingPattern[j].IsActive = true;
+                    StringMatchingInput[i + j].State = StringMatchingItemsState.Active;
+                    StringMatchingPattern[j].State = StringMatchingItemsState.Active;
 
                     if (StringMatchingInput[i + j].Character != StringMatchingPattern[j].Character)
                     {
                         await Task.Delay(_delayTime);
-                        if (IsAnimationPaused)
-                        {
-                            await _tcs.Task;
-                        }
+                        await PauseAnimationIfRequired();
                         break;
                     }
 
@@ -321,25 +422,52 @@ namespace VA.ViewModels
                     }
 
                     await Task.Delay(_delayTime);
-                    if (IsAnimationPaused)
-                    {
-                        await _tcs.Task;
-                    }
+                    await PauseAnimationIfRequired();
                 }
             }
 
             ResetColors();
         }
 
+        private async Task PauseAnimationIfRequired()
+        {
+            if (IsAnimationPaused)
+            {
+                await _tcs.Task;
+            }
+        }
+
+        private void ResetAnimation()
+        {
+            IsAnimationRunning = false;
+            IsAnimationPaused = false;
+            Result = "";
+            if (IsApplied) IsApplied = false;
+        }
+
         private void ResetColors()
         {
             for (int i = 0; i < StringMatchingInput.Count; i++)
             {
-                StringMatchingInput[i].IsActive = false;
+                if (StringMatchingInput[i].Character == '_')
+                {
+                    StringMatchingInput[i].State = StringMatchingItemsState.Space;
+                }
+                else
+                {
+                    StringMatchingInput[i].State = StringMatchingItemsState.Inactive;
+                }
             }
             for (int i = 0; i < StringMatchingPattern.Count; i++)
             {
-                StringMatchingPattern[i].IsActive = false;
+                if (StringMatchingPattern[i].Character == '_')
+                {
+                    StringMatchingPattern[i].State = StringMatchingItemsState.Space;
+                }
+                else
+                {
+                    StringMatchingPattern[i].State = StringMatchingItemsState.Inactive;
+                }
             }
         }
 

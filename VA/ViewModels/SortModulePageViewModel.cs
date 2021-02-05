@@ -63,6 +63,7 @@ namespace VA.ViewModels
             {
                 return _backCommand ?? (_backCommand = new DelegateCommand(() =>
                 {
+                    ResetAnimation();
                     var navigationService = Application.Current.Properties["NavigationService"] as NavigationService;
                     navigationService?.GoBack();
                 }));
@@ -83,9 +84,7 @@ namespace VA.ViewModels
                 if (_regularExpression.IsMatch(value) || value.Length == 0)
                 {
                     SetProperty(ref _input, value);
-                    IsAnimationRunning = false;
-                    IsAnimationPaused = false;
-                    if (IsApplied) IsApplied = false;
+                    ResetAnimation();
                 }
                 ApplyCommand.RaiseCanExecuteChanged();
             }
@@ -267,11 +266,7 @@ namespace VA.ViewModels
                     SortItems[j].State = SortItemsState.Active;
                     SortItems[j + 1].State = SortItemsState.Active;
                     await Task.Delay(_delayTime);
-
-                    if (IsAnimationPaused)
-                    {
-                        await _tcs.Task;
-                    }
+                    await PauseAnimationIfRequired();
                 }
 
                 if (!isSwapped)
@@ -319,11 +314,7 @@ namespace VA.ViewModels
                     SortItems[i].State = SortItemsState.Active;
                 }
                 await Task.Delay(_delayTime);
-
-                if (IsAnimationPaused)
-                {
-                    await _tcs.Task;
-                }
+                await PauseAnimationIfRequired();
             }
 
             ResetColors();
@@ -338,13 +329,18 @@ namespace VA.ViewModels
             SortItems[high].State = SortItemsState.Active;
 
             await Task.Delay(_delayTime);
+            await PauseAnimationIfRequired();
+
+            ResetColors();
+            return i + 1;
+        }
+
+        private async Task PauseAnimationIfRequired()
+        {
             if (IsAnimationPaused)
             {
                 await _tcs.Task;
             }
-
-            ResetColors();
-            return i + 1;
         }
 
         //Flashsort
@@ -356,6 +352,13 @@ namespace VA.ViewModels
                 await QuickSort(low, pi - 1);
                 await QuickSort(pi + 1, high);
             }
+        }
+
+        private void ResetAnimation()
+        {
+            IsAnimationRunning = false;
+            IsAnimationPaused = false;
+            if (IsApplied) IsApplied = false;
         }
 
         private void ResetColors()

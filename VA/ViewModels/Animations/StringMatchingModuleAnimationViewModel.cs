@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using VA.Interfaces;
+using VA.Resources;
 
 namespace VA.ViewModels.Animations
 {
@@ -21,12 +22,6 @@ namespace VA.ViewModels.Animations
         private string _result;
         private DelegateCommand _startAnimation;
         private DelegateCommand _stopAnimation;
-
-        #endregion
-
-        #region Private Properties
-
-        //private List<int> _activeInputItems { get; set; }
 
         #endregion
 
@@ -76,9 +71,8 @@ namespace VA.ViewModels.Animations
                                         ResetActiveItems();
                                     }
 
-                                    Input[i + j].IsActive = true;
-                                    Pattern[j].IsActive = true;
-                                    //_activeInputItems.Add(i + j);
+                                    Input[i + j].State = StringMatchingItemsState.Active;
+                                    Pattern[j].State = StringMatchingItemsState.Active;
                                     if (Input[i + j].Character != Pattern[j].Character)
                                     {
                                         await Task.Delay(_delayTime);
@@ -140,7 +134,6 @@ namespace VA.ViewModels.Animations
             Input = new List<StringMatchingModuleCharViewModel>(input.Select(i => new StringMatchingModuleCharViewModel(i)));
             var pattern = "ae";
             Pattern = new List<StringMatchingModuleCharViewModel>(pattern.Select(i => new StringMatchingModuleCharViewModel(i)));
-            //_activeInputItems = new List<int>();
             _isFirstMatch = true;
         }
 
@@ -150,13 +143,8 @@ namespace VA.ViewModels.Animations
 
         private void ResetActiveItems()
         {
-            /*for (int i = 0; i < _activeInputItems.Count; i++)
-            {
-                Input[_activeInputItems[i]].IsActive = false;
-            }*/
-            Input.ForEach(i => i.IsActive = false);
-            Pattern.ForEach(i => i.IsActive = false);
-            //_activeInputItems.Clear();
+            Input.ForEach(i => i.State = StringMatchingItemsState.Inactive);
+            Pattern.ForEach(i => i.State = StringMatchingItemsState.Inactive);
         }
 
         private void ResetModuleAnimation()
