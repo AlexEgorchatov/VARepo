@@ -22,8 +22,8 @@ namespace VA.ViewModels
         private int _delayTime;
         private string _input;
         private bool _isAnimationPaused;
-        private bool _isRunEnabled;
-        //private bool _isApplied;
+        private bool _isAnimationRunning;
+        private bool _isApplied;
         private double _panelWidth;
         private DelegateCommand _pauseCommand;
         private Regex _regularExpression;
@@ -51,8 +51,7 @@ namespace VA.ViewModels
                 return _applyCommand ?? (_applyCommand = new DelegateCommand(() =>
                 {
                     FillSortItems();
-                    IsRunEnabled = true;
-                    //IsApplied = true;
+                    IsApplied = true;
                 }, () => !string.IsNullOrEmpty(Input)));
             }
         }
@@ -108,24 +107,24 @@ namespace VA.ViewModels
             }
         }
 
-        public bool IsRunEnabled
+        public bool IsAnimationRunning
         {
-            get { return _isRunEnabled; }
-            set { SetProperty(ref _isRunEnabled, value); }
+            get { return _isAnimationRunning; }
+            set { SetProperty(ref _isAnimationRunning, value); }
         }
 
-        //public bool IsApplied
-        //{
-        //    get { return _isApplied; }
-        //    set
-        //    {
-        //        SetProperty(ref _isApplied, value);
-        //        if (!value)
-        //        {
-        //            SortItems.Clear();
-        //        }
-        //    }
-        //}
+        public bool IsApplied
+        {
+            get { return _isApplied; }
+            set
+            {
+                SetProperty(ref _isApplied, value);
+                if (!value)
+                {
+                    SortItems.Clear();
+                }
+            }
+        }
 
         public double PanelWidth
         {
@@ -161,7 +160,7 @@ namespace VA.ViewModels
             {
                 return _runCommand ?? (_runCommand = new DelegateCommand(async () =>
                 {
-                    IsRunEnabled = false;
+                    IsAnimationRunning = true;
                     switch (SelectedTab)
                     {
                         case "Bubble Sort":
@@ -175,7 +174,7 @@ namespace VA.ViewModels
                         default:
                             break;
                     }
-                    IsRunEnabled = true;
+                    IsAnimationRunning = false;
                 }));
             }
         }
@@ -185,7 +184,7 @@ namespace VA.ViewModels
             get { return _selectedTab; }
             set
             {
-                if (!IsRunEnabled) return;
+                if (IsAnimationRunning) return;
                 SetProperty(ref _selectedTab, value);
             }
         }
@@ -289,7 +288,7 @@ namespace VA.ViewModels
                     SortItems.Add(new SortModuleItemViewModel(30, Convert.ToInt32(numbers[i]) * 3, 270, 15 + 45 * i, Convert.ToInt32(numbers[i])));
                 }
             }
-            PanelWidth = 15 + (45 * numbers.Length);
+            PanelWidth = 15 + (45 * SortItems.Count);
         }
 
         private async Task<int> Partition(int low, int high)
@@ -299,6 +298,8 @@ namespace VA.ViewModels
 
             for (int j = low; j < high; j++)
             {
+                if (SortItems.Count == 0) return 0;
+
                 ResetColors();
                 SortItems[high].State = SortItemsState.Pivot;
                 SortItems[j].State = SortItemsState.Active;
@@ -316,6 +317,8 @@ namespace VA.ViewModels
                 await Task.Delay(_delayTime);
                 await PauseAnimationIfRequired();
             }
+
+            if (SortItems.Count == 0) return 0;
 
             ResetColors();
             var temp = SortItems[i + 1].Height;
@@ -346,6 +349,8 @@ namespace VA.ViewModels
         //Flashsort
         private async Task QuickSort(int low, int high)
         {
+            if (SortItems.Count == 0) return;
+
             if (low < high)
             {
                 int pi = await Partition(low, high);
