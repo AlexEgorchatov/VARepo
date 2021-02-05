@@ -75,7 +75,7 @@
 
                 <TextBlock Grid.Column="0" Text="Pattern" Foreground="#F5C81A" FontSize="24" VerticalAlignment="Center"/>
                 <TextBox Grid.Column="1" Height="30" Text="{Binding Pattern, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" FontFamily="{DynamicResource MainFont}" FontSize="14" VerticalContentAlignment="Center" Padding="5,0" Margin="0,0,10,0"/>
-                <Button Grid.Column="2" Height="30" Command="{Binding RunCommand}" Visibility="{Binding IsApplied, Converter={StaticResource GenericBooleanConverter}, FallbackValue=Hidden}" VerticalAlignment="Bottom" IsEnabled="{Binding IsAnimationRunning,Converter={StaticResource GenericBooleanConverter}, ConverterParameter=Inverse}">
+                <Button Grid.Column="2" Height="30" Command="{Binding RunCommand}" VerticalAlignment="Bottom" IsEnabled="{Binding IsAnimationRunning,Converter={StaticResource GenericBooleanConverter}, ConverterParameter=Inverse}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="&#xE102;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="10,0" FontSize="14"/>
                         <TextBlock Text="Run" Margin="14,0" FontSize="14"/>
