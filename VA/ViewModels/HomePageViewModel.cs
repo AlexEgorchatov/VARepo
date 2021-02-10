@@ -48,7 +48,7 @@ namespace VA.ViewModels
                             break;
 
                         case ModuleType.GridPathModule:
-                            navigationService?.Navigate(new SortModulePage(new SortModulePageViewModel()));
+                            navigationService?.Navigate(new GridPathModulePage(new GridPathModulePageViewModel()));
                             break;
                     }
                 }

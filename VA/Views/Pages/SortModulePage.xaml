@@ -68,14 +68,14 @@
         <TabControl Grid.Row="2" ItemsSource="{Binding SortTabs}" FontSize="14" SelectedItem="{Binding SelectedTab, Mode=TwoWay}">
             <TabControl.ContentTemplate>
                 <DataTemplate>
-                    <Grid Background="Gray">
+                    <Grid Background="Gray" DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Page}}, Path=DataContext}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="auto"/>
                         </Grid.RowDefinitions>
 
                         <Grid Grid.Row="0">
-                            <ItemsControl DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Page}}, Path=DataContext}" ItemsSource="{Binding SortItems}" Margin="30" Width="{Binding PanelWidth}">
+                            <ItemsControl ItemsSource="{Binding SortItems}" Margin="30" Width="{Binding PanelWidth}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas IsItemsHost="True" Background="Transparent"/>
@@ -123,8 +123,7 @@
                             </ItemsControl>
                         </Grid>
 
-                        <StackPanel Grid.Row="1" Orientation="Horizontal"
-                                    DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Page}}, Path=DataContext}">
+                        <StackPanel Grid.Row="1" Orientation="Horizontal">
                             <TextBlock Text="Slower" VerticalAlignment="Center" Margin="10,0,0,0"/>
                             <Slider Grid.Row="1" Value="{Binding SliderValue}" TickPlacement="BottomRight" Minimum="1" Maximum="9" TickFrequency="1" IsSnapToTickEnabled="True" VerticalAlignment="Top" HorizontalAlignment="Left" Width="300" Margin="10"/>
                             <TextBlock Text="Faster" VerticalAlignment="Center" Margin="0,0,20,0"/>

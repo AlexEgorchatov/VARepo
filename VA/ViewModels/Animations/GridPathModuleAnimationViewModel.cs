@@ -80,7 +80,7 @@ namespace VA.ViewModels.Animations
                                 GridQueue.Dequeue();
 
                                 //moving up
-                                if (cell.XCoordinate - 1 >= 0 && !Grid[Grid.IndexOf(cell) - _gridSize].IsVisited)
+                                if (cell.Column - 1 >= 0 && !Grid[Grid.IndexOf(cell) - _gridSize].IsVisited)
                                 {
                                     Grid[Grid.IndexOf(cell) - _gridSize].IsVisited = true;
                                     Grid[Grid.IndexOf(cell) - _gridSize].Distance = cell.Distance + 1;
@@ -106,7 +106,7 @@ namespace VA.ViewModels.Animations
                                 }
 
                                 //movding down
-                                if (cell.XCoordinate + 1 < _gridSize && !Grid[Grid.IndexOf(cell) + _gridSize].IsVisited)
+                                if (cell.Column + 1 < _gridSize && !Grid[Grid.IndexOf(cell) + _gridSize].IsVisited)
                                 {
                                     Grid[Grid.IndexOf(cell) + _gridSize].IsVisited = true;
                                     Grid[Grid.IndexOf(cell) + _gridSize].Distance = cell.Distance + 1;
@@ -132,7 +132,7 @@ namespace VA.ViewModels.Animations
                                 }
 
                                 //moving left
-                                if (cell.YCoordinate - 1 >= 0 && !Grid[Grid.IndexOf(cell) - 1].IsVisited)
+                                if (cell.Row - 1 >= 0 && !Grid[Grid.IndexOf(cell) - 1].IsVisited)
                                 {
                                     Grid[Grid.IndexOf(cell) - 1].IsVisited = true;
                                     Grid[Grid.IndexOf(cell) - 1].Distance = cell.Distance + 1;
@@ -158,7 +158,7 @@ namespace VA.ViewModels.Animations
                                 }
 
                                 //moving right
-                                if (cell.YCoordinate + 1 < _gridSize && !Grid[Grid.IndexOf(cell) + 1].IsVisited)
+                                if (cell.Row + 1 < _gridSize && !Grid[Grid.IndexOf(cell) + 1].IsVisited)
                                 {
                                     Grid[Grid.IndexOf(cell) + 1].IsVisited = true;
                                     Grid[Grid.IndexOf(cell) + 1].Distance = cell.Distance + 1;
@@ -219,7 +219,7 @@ namespace VA.ViewModels.Animations
             {
                 for (int j = 0; j < _gridSize; j++)
                 {
-                    Grid.Add(new GridPathModuleCellViewModel(i, j));
+                    Grid.Add(new GridPathModuleCellViewModel(i, j, 60));
                 }
             }
 

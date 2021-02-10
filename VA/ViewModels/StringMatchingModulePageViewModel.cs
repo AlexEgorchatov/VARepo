@@ -66,12 +66,6 @@ namespace VA.ViewModels
             }
         }
 
-        public int DelayTime
-        {
-            get { return _delayTime; }
-            set { SetProperty(ref _delayTime, value); }
-        }
-
         public string Input
         {
             get { return _input; }

@@ -1,4 +1,5 @@
 ﻿using Prism.Mvvm;
+using System.Windows;
 using System.Windows.Media;
 
 namespace VA.ViewModels.Animations
@@ -12,27 +13,23 @@ namespace VA.ViewModels.Animations
     {
         #region Private Fields
 
-        private const double _cellSide = 60;
-
         private ColorType _colorType;
-
         private SolidColorBrush _destinationBrush;
-
+        private double _height;
+        private bool _isVisible;
+        private double _left;
         private SolidColorBrush _neutralBrush;
-
         private SolidColorBrush _pathBrush;
-
         private SolidColorBrush _searchBrush;
-
         private SolidColorBrush _startBrush;
-
-        private int _xCoordinate;
-
-        private int _yCoordinate;
+        private double _top;
+        private double _width;
 
         #endregion
 
         #region Public Properties
+
+        public static Thickness Margin = new Thickness(15, 30, 15, 30);
 
         public SolidColorBrush BackgroundBrush
         {
@@ -71,43 +68,54 @@ namespace VA.ViewModels.Animations
             }
         }
 
+        public int Column { get; }
+
         public int Distance { get; set; }
 
-        public double Height { get; }
+        public double Height
+        {
+            get { return _height; }
+            set { SetProperty(ref _height, value); }
+        }
+
+        public bool IsVisible
+        {
+            get { return _isVisible; }
+            set { SetProperty(ref _isVisible, value); }
+        }
 
         public bool IsVisited { get; set; }
 
-        public double Left { get; }
-
-        public double Top { get; }
-
-        public double Width { get; }
-
-        public int XCoordinate
+        public double Left
         {
-            get { return _xCoordinate; }
-            set { SetProperty(ref _xCoordinate, value); }
+            get { return _left; }
+            set { SetProperty(ref _left, value); }
         }
 
-        public int YCoordinate
+        public int Row { get; }
+
+        public double Top
         {
-            get { return _yCoordinate; }
-            set { SetProperty(ref _yCoordinate, value); }
+            get { return _top; }
+            set { SetProperty(ref _top, value); }
+        }
+
+        public double Width
+        {
+            get { return _width; }
+            set { SetProperty(ref _width, value); }
         }
 
         #endregion
 
         #region Public Constructors
 
-        public GridPathModuleCellViewModel(int x, int y)
+        public GridPathModuleCellViewModel(int x, int y, double size)
         {
-            XCoordinate = x;
-            YCoordinate = y;
+            Column = x;
+            Row = y;
             Distance = 0;
-            Width = _cellSide;
-            Height = _cellSide;
-            Top = 30 + 60 * x;
-            Left = 15 + 60 * y;
+            SetSize(size);
             ColorType = ColorType.Neutral;
             IsVisited = false;
             _neutralBrush = new SolidColorBrush(Colors.White);
@@ -115,6 +123,18 @@ namespace VA.ViewModels.Animations
             _destinationBrush = new SolidColorBrush(Colors.Red);
             _pathBrush = new SolidColorBrush(Colors.DarkRed);
             _searchBrush = new SolidColorBrush(Color.FromRgb(245, 200, 26));
+        }
+
+        #endregion
+
+        #region Public Methods
+
+        public void SetSize(double size)
+        {
+            Width = size;
+            Height = size;
+            Top = Margin.Top + size * Column;
+            Left = Margin.Left + size * Row;
         }
 
         #endregion
