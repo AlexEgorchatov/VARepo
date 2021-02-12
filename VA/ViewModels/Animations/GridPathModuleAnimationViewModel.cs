@@ -63,7 +63,7 @@ namespace VA.ViewModels.Animations
 
                     GridQueue.Enqueue(Start);
                     Start.IsVisited = true;
-                    int currentDistance = 0;
+                    int currentDistance = -1;
 
                     while (GridQueue.Count != 0)
                     {
@@ -80,7 +80,7 @@ namespace VA.ViewModels.Animations
                                 GridQueue.Dequeue();
 
                                 //moving up
-                                if (cell.Column - 1 >= 0 && !Grid[Grid.IndexOf(cell) - _gridSize].IsVisited)
+                                if (cell.Row - 1 >= 0 && !Grid[Grid.IndexOf(cell) - _gridSize].IsVisited)
                                 {
                                     Grid[Grid.IndexOf(cell) - _gridSize].IsVisited = true;
                                     Grid[Grid.IndexOf(cell) - _gridSize].Distance = cell.Distance + 1;
@@ -92,7 +92,7 @@ namespace VA.ViewModels.Animations
                                         ResetModuleAnimation();
                                         GridQueue.Enqueue(Start);
                                         Start.IsVisited = true;
-                                        currentDistance = 0;
+                                        currentDistance = -1;
                                         await Task.Delay(_delayTime);
                                         continue;
                                     }
@@ -106,7 +106,7 @@ namespace VA.ViewModels.Animations
                                 }
 
                                 //movding down
-                                if (cell.Column + 1 < _gridSize && !Grid[Grid.IndexOf(cell) + _gridSize].IsVisited)
+                                if (cell.Row + 1 < _gridSize && !Grid[Grid.IndexOf(cell) + _gridSize].IsVisited)
                                 {
                                     Grid[Grid.IndexOf(cell) + _gridSize].IsVisited = true;
                                     Grid[Grid.IndexOf(cell) + _gridSize].Distance = cell.Distance + 1;
@@ -118,7 +118,7 @@ namespace VA.ViewModels.Animations
                                         ResetModuleAnimation();
                                         GridQueue.Enqueue(Start);
                                         Start.IsVisited = true;
-                                        currentDistance = 0;
+                                        currentDistance = -1;
                                         await Task.Delay(_delayTime);
                                         continue;
                                     }
@@ -132,7 +132,7 @@ namespace VA.ViewModels.Animations
                                 }
 
                                 //moving left
-                                if (cell.Row - 1 >= 0 && !Grid[Grid.IndexOf(cell) - 1].IsVisited)
+                                if (cell.Column - 1 >= 0 && !Grid[Grid.IndexOf(cell) - 1].IsVisited)
                                 {
                                     Grid[Grid.IndexOf(cell) - 1].IsVisited = true;
                                     Grid[Grid.IndexOf(cell) - 1].Distance = cell.Distance + 1;
@@ -144,7 +144,7 @@ namespace VA.ViewModels.Animations
                                         ResetModuleAnimation();
                                         GridQueue.Enqueue(Start);
                                         Start.IsVisited = true;
-                                        currentDistance = 0;
+                                        currentDistance = -1;
                                         await Task.Delay(_delayTime);
                                         continue;
                                     }
@@ -158,7 +158,7 @@ namespace VA.ViewModels.Animations
                                 }
 
                                 //moving right
-                                if (cell.Row + 1 < _gridSize && !Grid[Grid.IndexOf(cell) + 1].IsVisited)
+                                if (cell.Column + 1 < _gridSize && !Grid[Grid.IndexOf(cell) + 1].IsVisited)
                                 {
                                     Grid[Grid.IndexOf(cell) + 1].IsVisited = true;
                                     Grid[Grid.IndexOf(cell) + 1].Distance = cell.Distance + 1;
@@ -170,7 +170,7 @@ namespace VA.ViewModels.Animations
                                         ResetModuleAnimation();
                                         GridQueue.Enqueue(Start);
                                         Start.IsVisited = true;
-                                        currentDistance = 0;
+                                        currentDistance = -1;
                                         await Task.Delay(_delayTime);
                                         continue;
                                     }
@@ -266,7 +266,7 @@ namespace VA.ViewModels.Animations
                 }
                 else if (Grid[Grid.IndexOf(cell) + 1].Distance == cell.Distance - 1)
                 {
-                    cell = Grid[Grid.IndexOf(cell) - 1];
+                    cell = Grid[Grid.IndexOf(cell) + 1];
                     if (cell == start)
                     {
                         break;
@@ -282,7 +282,7 @@ namespace VA.ViewModels.Animations
             for (int i = 0; i < Grid.Count; i++)
             {
                 Grid[i].ColorType = ColorType.Neutral;
-                Grid[i].Distance = 0;
+                Grid[i].Distance = -1;
                 Grid[i].IsVisited = false;
             }
             Start = Grid[15];

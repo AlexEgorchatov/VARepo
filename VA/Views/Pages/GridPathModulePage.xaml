@@ -3,7 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-      xmlns:tools="clr-namespace:VA.Tools"
+      xmlns:tools="clr-namespace:VA.Tools" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
       mc:Ignorable="d" 
       d:DesignHeight="720" d:DesignWidth="1290"
       Title="GridPathModulePage">
@@ -39,10 +39,10 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0" Text="Left click to set start position, right click to set destination" Foreground="LightGray" FontSize="24" VerticalAlignment="Center"/>
-            <Button Grid.Column="1" Height="30" Command="{Binding RunCommand}" VerticalAlignment="Bottom" IsEnabled="{Binding IsAnimationRunning, Converter={StaticResource GenericBooleanConverter}, ConverterParameter=Inverse}">
+            <Button Grid.Column="1" Height="30" Command="{Binding ResetAnimationCommand}" VerticalAlignment="Bottom">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="&#xE102;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="10,0" FontSize="14"/>
-                    <TextBlock Text="Run" Margin="14,0" FontSize="14"/>
+                    <TextBlock Text="Reset" Margin="14,0" FontSize="14"/>
                 </StackPanel>
             </Button>
         </Grid>
@@ -72,13 +72,21 @@
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border BorderBrush="Black" BorderThickness="1">
-                                            <Grid Width="{Binding Width}" Height="{Binding Height}" Background="{Binding BackgroundBrush}"/>
+                                            <Grid Width="{Binding Width}" Height="{Binding Height}" Background="{Binding BackgroundBrush}">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="MouseLeftButtonUp">
+                                                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.SetStartCommand}" CommandParameter="{Binding .}"/>
+                                                    </i:EventTrigger>
+                                                    <i:EventTrigger EventName="MouseRightButtonUp">
+                                                        <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Page}}, Path=DataContext.SetDestinationCommand}" CommandParameter="{Binding .}"/>
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </Grid>
                                         </Border>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
                         </Grid>
-
 
                         <StackPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Bottom"
                                     DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Page}}, Path=DataContext}">

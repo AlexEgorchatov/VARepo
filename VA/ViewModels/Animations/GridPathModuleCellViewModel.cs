@@ -27,9 +27,13 @@ namespace VA.ViewModels.Animations
 
         #endregion
 
-        #region Public Properties
+        #region Public Fields
 
         public static Thickness Margin = new Thickness(15, 30, 15, 30);
+
+        #endregion
+
+        #region Public Properties
 
         public SolidColorBrush BackgroundBrush
         {
@@ -112,9 +116,9 @@ namespace VA.ViewModels.Animations
 
         public GridPathModuleCellViewModel(int x, int y, double size)
         {
-            Column = x;
-            Row = y;
-            Distance = 0;
+            Row = x;
+            Column = y;
+            Distance = -1;
             SetSize(size);
             ColorType = ColorType.Neutral;
             IsVisited = false;
@@ -133,8 +137,8 @@ namespace VA.ViewModels.Animations
         {
             Width = size;
             Height = size;
-            Top = Margin.Top + size * Column;
-            Left = Margin.Left + size * Row;
+            Top = Margin.Top + size * Row;
+            Left = Margin.Left + size * Column;
         }
 
         #endregion
