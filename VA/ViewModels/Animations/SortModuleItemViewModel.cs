@@ -10,10 +10,10 @@ namespace VA.ViewModels
 
         private double _height;
         private double _left;
+        private SortItemsState _state;
         private double _top;
         private int _value;
         private double _width;
-        private SortItemsState _state;
 
         #endregion
 
@@ -46,6 +46,12 @@ namespace VA.ViewModels
             set { SetProperty(ref _height, value); }
         }
 
+        public double Left
+        {
+            get { return _left; }
+            set { SetProperty(ref _left, value); }
+        }
+
         public SortItemsState State
         {
             get { return _state; }
@@ -54,12 +60,6 @@ namespace VA.ViewModels
                 _state = value;
                 RaisePropertyChanged(nameof(BackgroundBrush));
             }
-        }
-
-        public double Left
-        {
-            get { return _left; }
-            set { SetProperty(ref _left, value); }
         }
 
         public double Top

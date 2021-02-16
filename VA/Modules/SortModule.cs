@@ -23,7 +23,6 @@ namespace VA.Modules
 
         public SortModule()
         {
-
         }
 
         #endregion

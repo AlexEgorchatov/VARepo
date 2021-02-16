@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace VA.Resources
+﻿namespace VA.Resources
 {
+    public enum GridPathItemsState
+    {
+        Neutral, Start, Destination, Path, Search
+    }
+
     public enum ModuleType
     {
         SortModule, StringMatchingModule, GridPathModule

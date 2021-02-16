@@ -1,27 +1,18 @@
 ﻿using Prism.Mvvm;
 using System.Windows;
 using System.Windows.Media;
+using VA.Resources;
 
 namespace VA.ViewModels.Animations
 {
-    public enum ColorType
-    {
-        Neutral, Start, Destination, Path, Search
-    }
-
     public class GridPathModuleCellViewModel : BindableBase
     {
         #region Private Fields
 
-        private ColorType _colorType;
-        private SolidColorBrush _destinationBrush;
         private double _height;
         private bool _isVisible;
         private double _left;
-        private SolidColorBrush _neutralBrush;
-        private SolidColorBrush _pathBrush;
-        private SolidColorBrush _searchBrush;
-        private SolidColorBrush _startBrush;
+        private GridPathItemsState _state;
         private double _top;
         private double _width;
 
@@ -39,36 +30,26 @@ namespace VA.ViewModels.Animations
         {
             get
             {
-                switch (ColorType)
+                switch (State)
                 {
-                    case ColorType.Neutral:
-                        return _neutralBrush;
+                    case GridPathItemsState.Neutral:
+                        return new SolidColorBrush(Colors.White);
 
-                    case ColorType.Start:
-                        return _startBrush;
+                    case GridPathItemsState.Start:
+                        return new SolidColorBrush(Colors.Green);
 
-                    case ColorType.Destination:
-                        return _destinationBrush;
+                    case GridPathItemsState.Destination:
+                        return new SolidColorBrush(Colors.Red);
 
-                    case ColorType.Path:
-                        return _pathBrush;
+                    case GridPathItemsState.Path:
+                        return new SolidColorBrush(Colors.DarkRed);
 
-                    case ColorType.Search:
-                        return _searchBrush;
+                    case GridPathItemsState.Search:
+                        return new SolidColorBrush(Color.FromRgb(245, 200, 26));
 
                     default:
-                        return _neutralBrush;
+                        return null;
                 }
-            }
-        }
-
-        public ColorType ColorType
-        {
-            get { return _colorType; }
-            set
-            {
-                _colorType = value;
-                RaisePropertyChanged("BackgroundBrush");
             }
         }
 
@@ -98,6 +79,16 @@ namespace VA.ViewModels.Animations
 
         public int Row { get; }
 
+        public GridPathItemsState State
+        {
+            get { return _state; }
+            set
+            {
+                _state = value;
+                RaisePropertyChanged(nameof(BackgroundBrush));
+            }
+        }
+
         public double Top
         {
             get { return _top; }
@@ -120,13 +111,7 @@ namespace VA.ViewModels.Animations
             Column = y;
             Distance = -1;
             SetSize(size);
-            ColorType = ColorType.Neutral;
             IsVisited = false;
-            _neutralBrush = new SolidColorBrush(Colors.White);
-            _startBrush = new SolidColorBrush(Colors.Green);
-            _destinationBrush = new SolidColorBrush(Colors.Red);
-            _pathBrush = new SolidColorBrush(Colors.DarkRed);
-            _searchBrush = new SolidColorBrush(Color.FromRgb(245, 200, 26));
         }
 
         #endregion

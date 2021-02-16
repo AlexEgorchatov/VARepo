@@ -31,8 +31,8 @@ namespace VA.ViewModels
         public IModule SelectedModule
         {
             get { return _selectedModule; }
-            set 
-            { 
+            set
+            {
                 SetProperty(ref _selectedModule, value);
                 if (SelectedModule != null)
                 {
@@ -77,6 +77,16 @@ namespace VA.ViewModels
             };
         }
 
+        private void OnPageNavigated(object sender, NavigationEventArgs e)
+        {
+            switch ((e.Content as Page).DataContext)
+            {
+                case HomePageViewModel:
+                    ((e.Content as Page).DataContext as HomePageViewModel).SelectedModule = null;
+                    break;
+            }
+        }
+
         #endregion
 
         #region Public Methods
@@ -89,16 +99,6 @@ namespace VA.ViewModels
                 var navigationService = Application.Current.Properties["NavigationService"] as NavigationService;
                 navigationService.Navigated += OnPageNavigated;
             });
-        }
-
-        private void OnPageNavigated(object sender, NavigationEventArgs e)
-        {
-            switch ((e.Content as Page).DataContext) 
-            {
-                case HomePageViewModel:
-                    ((e.Content as Page).DataContext as HomePageViewModel).SelectedModule = null;
-                    break;
-            }
         }
 
         public void InitializeModules()

@@ -39,9 +39,9 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0" Text="Left click to set start position, right click to set destination" Foreground="LightGray" FontSize="24" VerticalAlignment="Center"/>
-            <Button Grid.Column="1" Height="30" Command="{Binding ResetAnimationCommand}" VerticalAlignment="Bottom">
+            <Button Grid.Column="1" Height="30" Command="{Binding ResetAnimationCommand}" IsEnabled="{Binding IsAnimationRunning, Converter={StaticResource GenericBooleanConverter}, ConverterParameter=Inverse}" VerticalAlignment="Bottom">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="&#xE102;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="10,0" FontSize="14"/>
+                    <TextBlock Text="&#xE117;" FontFamily="Segoe MDL2 Assets" VerticalAlignment="Center" Margin="10,0" FontSize="14"/>
                     <TextBlock Text="Reset" Margin="14,0" FontSize="14"/>
                 </StackPanel>
             </Button>

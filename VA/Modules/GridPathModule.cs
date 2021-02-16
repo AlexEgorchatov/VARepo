@@ -29,7 +29,6 @@ namespace VA.Modules
 
         #region Public Methods
 
-
         public void InitializeModule()
         {
             Title = "Grid Path Module";

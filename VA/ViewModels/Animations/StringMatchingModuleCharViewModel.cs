@@ -8,26 +8,17 @@ namespace VA.ViewModels.Animations
     {
         #region Private Fields
 
+        private char _character;
+        private StringMatchingItemsState _state;
+
         #endregion
 
         #region Public Properties
 
-        private StringMatchingItemsState _state;
-        public StringMatchingItemsState State
+        public char Character
         {
-            get { return _state; }
-            set 
-            { 
-                SetProperty(ref _state, value);
-                RaisePropertyChanged(nameof(ForegroundBrush));
-            }
-        }
-
-        private char _character;
-        public char Character 
-        {
-            get { return _character; } 
-            set { SetProperty(ref _character, value); } 
+            get { return _character; }
+            set { SetProperty(ref _character, value); }
         }
 
         public SolidColorBrush ForegroundBrush
@@ -51,6 +42,16 @@ namespace VA.ViewModels.Animations
             }
         }
 
+        public StringMatchingItemsState State
+        {
+            get { return _state; }
+            set
+            {
+                SetProperty(ref _state, value);
+                RaisePropertyChanged(nameof(ForegroundBrush));
+            }
+        }
+
         #endregion
 
         #region Public Constructors
@@ -62,9 +63,13 @@ namespace VA.ViewModels.Animations
 
         #endregion
 
+        #region Public Methods
+
         public override string ToString()
         {
             return $"{Character}";
         }
+
+        #endregion
     }
 }

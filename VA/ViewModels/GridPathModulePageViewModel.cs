@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Navigation;
+using VA.Resources;
 using VA.ViewModels.Animations;
 
 namespace VA.ViewModels
@@ -19,6 +20,7 @@ namespace VA.ViewModels
         private List<GridPathModuleCellViewModel> _grid;
         private bool _isAnimationPaused;
         private bool _isAnimationRunning;
+        private bool _isPathFound;
         private double _panelWidth;
         private DelegateCommand _pauseCommand;
         private DelegateCommand _resetAnimationCommand;
@@ -48,7 +50,7 @@ namespace VA.ViewModels
             {
                 return _backCommand ?? (_backCommand = new DelegateCommand(() =>
                 {
-                    //ResetAnimation();
+                    ResetAnimationCommand.Execute();
                     var navigationService = Application.Current.Properties["NavigationService"] as NavigationService;
                     navigationService?.GoBack();
                 }));
@@ -63,7 +65,7 @@ namespace VA.ViewModels
                 SetProperty(ref _destination, value);
                 if (Destination != null)
                 {
-                    Destination.ColorType = ColorType.Destination;
+                    Destination.State = GridPathItemsState.Destination;
                 }
             }
         }
@@ -128,12 +130,14 @@ namespace VA.ViewModels
                     GridQueue.Clear();
                     for (int i = 0; i < Grid.Count; i++)
                     {
-                        Grid[i].ColorType = ColorType.Neutral;
+                        Grid[i].State = GridPathItemsState.Neutral;
                         Grid[i].Distance = -1;
                         Grid[i].IsVisited = false;
                     }
                     Start = null;
                     Destination = null;
+                    IsAnimationRunning = false;
+                    IsAnimationPaused = false;
                 }));
             }
         }
@@ -166,6 +170,7 @@ namespace VA.ViewModels
                             break;
                     }
                     IsAnimationRunning = false;
+                    _isPathFound = true;
                 }));
             }
         }
@@ -186,9 +191,18 @@ namespace VA.ViewModels
             {
                 return _setDestinationCommand ?? (_setDestinationCommand = new DelegateCommand<GridPathModuleCellViewModel>(e =>
                 {
+                    if (IsAnimationRunning)
+                    {
+                        return;
+                    }
+                    if (_isPathFound)
+                    {
+                        _isPathFound = false;
+                        ResetAnimationCommand.Execute();
+                    }
                     if (Destination != null)
                     {
-                        Destination.ColorType = ColorType.Neutral;
+                        Destination.State = GridPathItemsState.Neutral;
                         Destination = null;
                     }
                     if (Start == e)
@@ -211,9 +225,18 @@ namespace VA.ViewModels
             {
                 return _setStartCommand ?? (_setStartCommand = new DelegateCommand<GridPathModuleCellViewModel>(e =>
                 {
+                    if (IsAnimationRunning)
+                    {
+                        return;
+                    }
+                    if (_isPathFound)
+                    {
+                        _isPathFound = false;
+                        ResetAnimationCommand.Execute();
+                    }
                     if (Start != null)
                     {
-                        Start.ColorType = ColorType.Neutral;
+                        Start.State = GridPathItemsState.Neutral;
                         Start = null;
                     }
                     if (Destination == e)
@@ -248,7 +271,7 @@ namespace VA.ViewModels
                 SetProperty(ref _start, value);
                 if (Start != null)
                 {
-                    Start.ColorType = ColorType.Start;
+                    Start.State = GridPathItemsState.Start;
                 }
             }
         }
@@ -307,22 +330,18 @@ namespace VA.ViewModels
                     if (Grid[Grid.IndexOf(cell) - (int)Columns] == Destination)
                     {
                         await Task.Delay(_delayTime);
+                        await PauseAnimationIfRequired();
                         DrawPath(Destination, Start);
-                        /*await Task.Delay(_delayTime);
-                        ResetModuleAnimation();
-                        GridQueue.Enqueue(Start);
-                        Start.IsVisited = true;
-                        currentDistance = 0;
-                        await Task.Delay(_delayTime);*/
                         break;
                     }
                     if (cell.Distance - currentDistance == 1)
                     {
                         currentDistance = cell.Distance;
                         await Task.Delay(_delayTime);
+                        await PauseAnimationIfRequired();
                     }
                     GridQueue.Enqueue(Grid[Grid.IndexOf(cell) - (int)Columns]);
-                    Grid[Grid.IndexOf(cell) - (int)Columns].ColorType = ColorType.Search;
+                    Grid[Grid.IndexOf(cell) - (int)Columns].State = GridPathItemsState.Search;
                 }
 
                 //movding down
@@ -333,22 +352,18 @@ namespace VA.ViewModels
                     if (Grid[Grid.IndexOf(cell) + (int)Columns] == Destination)
                     {
                         await Task.Delay(_delayTime);
+                        await PauseAnimationIfRequired();
                         DrawPath(Destination, Start);
-                        /*await Task.Delay(_delayTime);
-                        ResetModuleAnimation();
-                        GridQueue.Enqueue(Start);
-                        Start.IsVisited = true;
-                        currentDistance = 0;
-                        await Task.Delay(_delayTime);*/
                         break;
                     }
                     if (cell.Distance - currentDistance == 1)
                     {
                         currentDistance = cell.Distance;
                         await Task.Delay(_delayTime);
+                        await PauseAnimationIfRequired();
                     }
                     GridQueue.Enqueue(Grid[Grid.IndexOf(cell) + (int)Columns]);
-                    Grid[Grid.IndexOf(cell) + (int)Columns].ColorType = ColorType.Search;
+                    Grid[Grid.IndexOf(cell) + (int)Columns].State = GridPathItemsState.Search;
                 }
 
                 //moving left
@@ -359,22 +374,18 @@ namespace VA.ViewModels
                     if (Grid[Grid.IndexOf(cell) - 1] == Destination)
                     {
                         await Task.Delay(_delayTime);
+                        await PauseAnimationIfRequired();
                         DrawPath(Destination, Start);
-                        /*await Task.Delay(_delayTime);
-                        ResetModuleAnimation();
-                        GridQueue.Enqueue(Start);
-                        Start.IsVisited = true;
-                        currentDistance = 0;
-                        await Task.Delay(_delayTime);*/
                         break;
                     }
                     if (cell.Distance - currentDistance == 1)
                     {
                         currentDistance = cell.Distance;
                         await Task.Delay(_delayTime);
+                        await PauseAnimationIfRequired();
                     }
                     GridQueue.Enqueue(Grid[Grid.IndexOf(cell) - 1]);
-                    Grid[Grid.IndexOf(cell) - 1].ColorType = ColorType.Search;
+                    Grid[Grid.IndexOf(cell) - 1].State = GridPathItemsState.Search;
                 }
 
                 //moving right
@@ -385,22 +396,18 @@ namespace VA.ViewModels
                     if (Grid[Grid.IndexOf(cell) + 1] == Destination)
                     {
                         await Task.Delay(_delayTime);
+                        await PauseAnimationIfRequired();
                         DrawPath(Destination, Start);
-                        /*await Task.Delay(_delayTime);
-                        ResetModuleAnimation();
-                        GridQueue.Enqueue(Start);
-                        Start.IsVisited = true;
-                        currentDistance = 0;
-                        await Task.Delay(_delayTime);*/
                         break;
                     }
                     if (cell.Distance - currentDistance == 1)
                     {
                         currentDistance = cell.Distance;
                         await Task.Delay(_delayTime);
+                        await PauseAnimationIfRequired();
                     }
                     GridQueue.Enqueue(Grid[Grid.IndexOf(cell) + 1]);
-                    Grid[Grid.IndexOf(cell) + 1].ColorType = ColorType.Search;
+                    Grid[Grid.IndexOf(cell) + 1].State = GridPathItemsState.Search;
                 }
             }
         }
@@ -418,35 +425,43 @@ namespace VA.ViewModels
                     {
                         break;
                     }
-                    cell.ColorType = ColorType.Path;
+                    cell.State = GridPathItemsState.Path;
                 }
-                else if (Grid.IndexOf(cell) + (int)Columns < Rows * Columns && Grid[Grid.IndexOf(cell) + (int)Columns].Distance == cell.Distance - 1)
+                else if (Grid.IndexOf(cell) + (int)Columns < Grid.Count && Grid[Grid.IndexOf(cell) + (int)Columns].Distance == cell.Distance - 1)
                 {
                     cell = Grid[Grid.IndexOf(cell) + (int)Columns];
                     if (cell == start)
                     {
                         break;
                     }
-                    cell.ColorType = ColorType.Path;
+                    cell.State = GridPathItemsState.Path;
                 }
-                else if (/*Grid.IndexOf(cell) - 1 >= 0 && */Grid[Grid.IndexOf(cell) - 1].Distance == cell.Distance - 1)
+                else if (Grid[Grid.IndexOf(cell) - 1].Distance == cell.Distance - 1)
                 {
                     cell = Grid[Grid.IndexOf(cell) - 1];
                     if (cell == start)
                     {
                         break;
                     }
-                    cell.ColorType = ColorType.Path;
+                    cell.State = GridPathItemsState.Path;
                 }
-                else if (/*Grid.IndexOf(cell) + 1 < Columns && */Grid[Grid.IndexOf(cell) + 1].Distance == cell.Distance - 1)
+                else if (Grid[Grid.IndexOf(cell) + 1].Distance == cell.Distance - 1)
                 {
                     cell = Grid[Grid.IndexOf(cell) + 1];
                     if (cell == start)
                     {
                         break;
                     }
-                    cell.ColorType = ColorType.Path;
+                    cell.State = GridPathItemsState.Path;
                 }
+            }
+        }
+
+        private async Task PauseAnimationIfRequired()
+        {
+            if (IsAnimationPaused)
+            {
+                await _tcs.Task;
             }
         }
 

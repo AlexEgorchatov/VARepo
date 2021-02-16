@@ -3,7 +3,7 @@
                     xmlns:local="clr-namespace:VA.Styles">
 
     <FontFamily x:Key="MainFont">Do Hyeon Regular</FontFamily>
-    
+
     <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
         <Setter Property="FontFamily" Value="{DynamicResource MainFont}"/>
     </Style>
