@@ -31,5 +31,25 @@ namespace VA.Views
             Application.Current.Properties["NavigationService"] = frame.NavigationService;
             frame.Navigate(new HomePage());
         }
+
+        private void Button_Close_Click(object sender, RoutedEventArgs e)
+        {
+            var window = (Window)((FrameworkElement)sender).TemplatedParent;
+            window.Close();
+        }
+
+        private void Button_Maximize_Collapse_Click(object sender, RoutedEventArgs e)
+        {
+            var window = (Window)((FrameworkElement)sender).TemplatedParent;
+            window.WindowState = window.WindowState == WindowState.Normal
+                ? WindowState.Maximized
+                : WindowState.Normal;
+        }
+
+        private void Button_Minimize_Click(object sender, RoutedEventArgs e)
+        {
+            var window = (Window)((FrameworkElement)sender).TemplatedParent;
+            window.WindowState = WindowState.Minimized;
+        }
     }
 }

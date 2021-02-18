@@ -3,13 +3,211 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
-        xmlns:prism="http://prismlibrary.com/" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:shell="http://schemas.microsoft.com/netfx/2009/xaml/presentation"
+        mc:Ignorable="d" Icon="../resources/vaicon.ico"
+        xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="MainWindow" Height="720" MinHeight="720" Width="1280" MinWidth="1280" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" WindowState="Normal">
+        Title="" Height="720" MinHeight="720" Width="1280" MinWidth="1280" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen" WindowState="Normal">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="RibbonWindow_Path_Background" Color="#fff"/>
+        <SolidColorBrush x:Key="RibbonWindowButtonsHoverColor" Color="#F5C81A"/>
+        <!--<SolidColorBrush x:Key="RibbonWindowButtonsPressedColor" Color="#B9E5FE"/>-->
+
+        <Style x:Key="MinimizeButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="22"/>
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Path" Storyboard.TargetProperty="Fill">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource RibbonWindowButtonsHoverColor}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <!--<VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Path" Storyboard.TargetProperty="Fill">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource RibbonWindowButtonsPressedColor}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>-->
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Path x:Name="Path" Margin="0 4 0 0" Data="M0,0 L10,0 10,3 0,3 z" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{StaticResource RibbonWindow_Path_Background}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="22"/>
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Grid>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MaximizedPath" Storyboard.TargetProperty="Stroke">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource RibbonWindowButtonsHoverColor}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RestoredPath" Storyboard.TargetProperty="Fill">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource RibbonWindowButtonsHoverColor}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <!--<VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MaximizedPath" Storyboard.TargetProperty="Stroke">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource RibbonWindowButtonsPressedColor}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="RestoredPath" Storyboard.TargetProperty="Fill">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource RibbonWindowButtonsPressedColor}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <Storyboard Duration="0">
+                                            <DoubleAnimation Duration="0" To="0.5" Storyboard.TargetName="ContentGrid" Storyboard.TargetProperty="Opacity"/>
+                                        </Storyboard>
+                                    </VisualState>-->
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Grid x:Name="Restore" Background="Transparent">
+                                <Path x:Name="MaximizedPath" Data="M1,1 L9,1 L9,9 L1,9 z" HorizontalAlignment="Center" VerticalAlignment="Center" Stroke="{StaticResource RibbonWindow_Path_Background}" StrokeThickness="2" Width="10" Height="10"/>
+                            </Grid>
+                            <Grid Visibility="Collapsed" x:Name="Collapse" Background="Transparent">
+                                <Path x:Name="RestoredPath" Data="M1,4 L10,4 10,12 1,12 z M3,6 L8,6 8,10 3,10 z M4,1 L13,1 13,9 11,9 11,3 4,3 z" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{StaticResource RibbonWindow_Path_Background}"/>
+                            </Grid>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Restore" Property="Visibility" Value="Collapsed"/>
+                                <Setter TargetName="Collapse" Property="Visibility" Value="Visible"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="CloseButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Height" Value="22"/>
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="shell:WindowChrome.IsHitTestVisibleInChrome" Value="True"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Grid Background="{TemplateBinding Background}">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal"/>
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Path" Storyboard.TargetProperty="Fill">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource RibbonWindowButtonsHoverColor}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <!--<VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetName="Path" Storyboard.TargetProperty="Fill">
+                                                <DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource RibbonWindowButtonsPressedColor}"/>
+                                            </ObjectAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>-->
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Path x:Name="Path" Data="M0,0L3,0 3,1 4,1 4,2 6,2 6,1 7,1 7,0 10,0 10,1 9,1 9,2 8,2 8,3 7,3 7,5 8,5 8,6 9,6 9,7 10,7 10,8 7,8 7,7 6,7 6,6 4,6 4,7 3,7 3,8 0,8 0,7 1,7 1,6 2,6 2,5 3,5 3,3 2,3 2,2 1,2 1,1 0,1z" HorizontalAlignment="Center" VerticalAlignment="Center" Fill="{StaticResource RibbonWindow_Path_Background}"/>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Window.Style>
+        <Style TargetType="{x:Type Window}">
+            <Setter Property="shell:WindowChrome.WindowChrome">
+                <Setter.Value>
+                    <shell:WindowChrome/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Window}">
+                        <Grid>
+                            <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}">
+                                <Grid x:Name="windowDecorator" Background="Transparent">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="30"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Grid Grid.Row="0" Background="#555">
+                                        <TextBlock Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left"   
+                               Margin="40,0"/>
+                                        <Image Source="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Icon}" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=(shell:WindowChrome.WindowChrome).ResizeBorderThickness}" Width="30" shell:WindowChrome.IsHitTestVisibleInChrome="True"/>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="5,0">
+                                            <Button x:Name="minimizeButton" Click="Button_Minimize_Click" Style="{StaticResource MinimizeButtonStyle}"/>
+                                            <ToggleButton x:Name="maximizeButton" Click="Button_Maximize_Collapse_Click" Style="{StaticResource ToggleButtonStyle}"/>
+                                            <Button x:Name="closeButton" Click="Button_Close_Click" Style="{StaticResource CloseButtonStyle}"/>
+                                        </StackPanel>
+                                    </Grid>
+                                    <AdornerDecorator Grid.Row="1" Margin="0">
+                                        <ContentPresenter Content="{TemplateBinding Content}" />
+                                    </AdornerDecorator>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="Window.ResizeMode" Value="NoResize">
+                                <Setter TargetName="minimizeButton" Property="Visibility" Value="Collapsed"/>
+                                <Setter TargetName="maximizeButton" Property="Visibility" Value="Collapsed"/>
+                                <Setter TargetName="closeButton" Property="Visibility" Value="Collapsed"/>
+                            </Trigger>
+                            <Trigger Property="WindowState" Value="Maximized">
+                                <Setter TargetName="windowDecorator" Property="Margin" Value="6"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Style>
 
     <Grid Background="#222">
         <Frame x:Name="frame" NavigationUIVisibility="Hidden" Margin="30"/>
     </Grid>
-   
+
 </Window>
